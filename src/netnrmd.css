@@ -1,0 +1,144 @@
+﻿/*容器*/
+.netnrmd {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+/*全屏*/
+.netnrmd-fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 6666;
+    background-color: #fff;
+    border-color: transparent;
+}
+/*工具条容器*/
+.netnrmd-toolbar {
+    width: 100%;
+    float: left;
+    border-bottom: 1px solid #ccc;
+}
+/*工具条*/
+.netnrmd-menu {
+    margin: 0;
+    padding: 0 5px;
+    list-style: none;
+    background-color: #FFF;
+}
+
+    .netnrmd-menu li {
+        float: left;
+        margin: 0 3px;
+    }
+
+        .netnrmd-menu li.float-right {
+            float: right;
+        }
+
+        .netnrmd-menu li a {
+            color: #999;
+            width: 25px;
+            height: 25px;
+            display: block;
+            cursor: pointer;
+            overflow: hidden;
+            line-height: 25px;
+            text-align: center;
+            text-decoration: none;
+            border: 3px solid #FFF;
+            box-sizing: content-box;
+        }
+
+            .netnrmd-menu li a:hover, .netnrmd-menu li a.active {
+                color: green;
+                border-color: #f6f6f6;
+                background-color: #f6f6f6;
+            }
+
+/*编辑容器*/
+.netnrmd-write {
+    position: relative;
+    border-right: 1px solid #ccc;
+    box-sizing: border-box;
+    padding: 0 0 0 10px;
+    float: left;
+    width: 50%;
+}
+
+    .netnrmd-write textarea {
+        width: 100%;
+        height: 100%;
+        border: none;
+        resize: none;
+        outline: none;
+        box-sizing: border-box;
+    }
+
+/*渲染视图*/
+.netnrmd-view {
+    position: relative;
+    width: 50%;
+    float: right;
+    overflow-y: auto;
+    padding: 0px 10px;
+    word-wrap: break-word;
+    word-break: break-word;
+    box-sizing: border-box;
+}
+
+/*最大编辑*/
+.netnrmd-write-w100 {
+    width: 100%;
+    border-right: none;
+}
+/*隐藏编辑*/
+.netnrmd-write-hidden {
+    width: 100%;
+    display: none;
+    overflow: hidden;
+}
+/*隐藏视图*/
+.netnrmd-view-hidden {
+    width: 0;
+    display: none;
+    overflow: hidden;
+}
+/*最大视图*/
+.netnrmd-view-w100 {
+    width: 100%;
+}
+
+/*空视图*/
+.netnrmd-view-empty {
+    color: #999;
+    line-height: 50px;
+    text-align: center;
+}
+
+/*视图渲染全局样式*/
+
+.netnrmd-view * {
+    max-width: 100%;
+}
+
+.netnrmd-view table {
+    border-spacing: 0;
+    margin-bottom: 15px;
+    border-collapse: collapse;
+}
+
+    .netnrmd-view table tr th {
+        font-weight: 600;
+    }
+
+    .netnrmd-view table tr th, .netnrmd-view table tr td {
+        padding: 5px 12px;
+        border: 1px solid #858d96;
+    }
