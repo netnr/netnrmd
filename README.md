@@ -37,33 +37,68 @@ console.log(nmd);
 ### Options 选项
 
 ```js
-var nmd = new netnrmd('#txt',{
-	fullscreen: false,		//全屏
-	splitscreen: true,		//分屏
-	height: 300,			//高度
-	defer: 300,				//延迟解析（毫秒）
-	prefixicon: 'fa fa-',	//矢量图标前缀，font-awesome
-	prefixkey: 'Ctrl+',		//按键支持
-	//解析器，默认使用remarkable，需要引入remarkable
-	//指定解析方式，返回解析后的HTML
-	render: function(md){
-		console.log(md)
-		return md;
-	},
-	//工具栏
-	items:[
-		{
-			title: '表情',		//title
-			icon: 'smile-o',	//icon
-			key: 'E',			//keyboard
-			cmd: 'emoji'		//cmd (default icon) 
-		},
-		{
-			title: '粗体',
-			icon: 'bold',
-			key: 'B'
-		}
-	]
+var nmd = new netnrmd('#txt', {
+    fullscreen: false,		//全屏
+    splitscreen: true,		//分屏
+    height: 300,			//高度
+    defer: 300,				//延迟解析（毫秒）
+    prefixicon: 'fa fa-',	//矢量图标前缀，font-awesome
+    prefixkey: 'Ctrl+',		//按键支持
+    //解析器，默认使用remarkable，需要引入remarkable
+    //指定解析方式，返回解析后的HTML
+    render: function (md) {
+        console.log(md)
+        return md;
+    },
+    //工具栏
+    items: [
+        {
+            title: '表情',		//title
+            icon: 'smile-o',	//icon
+            key: 'E',			//keyboard
+            cmd: 'emoji'		//cmd (default icon) 
+        },
+        {
+            title: '粗体',
+            icon: 'bold',
+            key: 'B'
+        }
+    ],
+    //Before rendering the callback, add an expression Icon
+    //渲染前回调，添加一个表情图标
+    viewbefore: function () {
+        this.items.splice(0, 0, {
+            title: '表情/emoji',
+            icon: 'smile-o',
+            key: 'E',
+            cmd: 'emoji'
+        });
+    },
+    //Markdown editor changes when callback, custom parsing, add: emoji: parsing
+    //编辑器变动时回调，自定义解析，添加 :emoji: 解析
+    input: function () {
+        //html
+        var htm = this.md.render(this.getmd());
+
+        //:emoji:
+        //emojiParse自己实现
+        htm = emojiParse(htm);
+
+        //赋值视图
+        //set html
+        c.markdown.sethtml(htm);
+
+        //Prevent internal rendering		
+        //阻止内部渲染 
+        return false;
+    },
+    //Trigger command callback
+    //触发命令回调
+    cmdcallback: function (cmd) {
+        if (cmd == "emoji") {
+            $('#myModalEmoji').modal();
+        }
+    }
 });
 
 //default remarkable parse，默认解析方式
@@ -77,6 +112,9 @@ console.log(md.render('# Remarkable rulezz!'));
 ```js
 var nmd = new netnrmd('#txt');
 console.log(nmd);
+
+//focus 焦点选中
+nmd.focus();
 
 //set height 设置高度
 nmd.height(200);

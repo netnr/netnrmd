@@ -141,6 +141,11 @@
             //编辑器父容器
             obj.container = obj.textarea.parent();
 
+            //渲染前回调
+            if (typeof obj.viewbefore == "function") {
+                obj.viewbefore.call(obj)
+            }
+
             //工具条
             var lis = [];
             $(obj.items).each(function () {
@@ -155,23 +160,15 @@
                 if (target.nodeName == "A") {
                     if (e.preventDefault) { e.preventDefault() } else { window.event.returnValue = false }
                     var cmdname = target.hash.substring(1);
-                    //允许响应命令
-                    if (that.cmdFilter(cmdname) == false) {
-                        return false;
-                    }
+
                     //执行命令
-                    netnrmd.cmd(cmdname, obj.textarea[0], obj.cmdcallback);
-                    //编辑器内容变动回调
-                    if (typeof obj.input == "function" && obj.input.call(that) == false) {
-                        return false;
-                    }
-                    that.render();
+                    netnrmd.cmd(cmdname, that);
                 }
             }).end();
             //写
             obj.write = $('<div class="netnrmd-write"></div>').append(obj.textarea);
             //视图
-            obj.view = $('<div class="netnrmd-view"></div>');
+            obj.view = $('<div class="netnrmd-body netnrmd-view"></div>');
             //编辑器
             obj.editor = $('<div class="netnrmd"></div>').append(obj.toolbar).append(obj.write).append(obj.view);
 
@@ -199,6 +196,11 @@
             this.clear();
 
             obj.textarea.data('netnrmd', this);
+            return this;
+        },
+        //获取焦点
+        focus: function () {
+            this.obj.textarea[0].focus();
             return this;
         },
         //设置高度
@@ -313,8 +315,8 @@
         //渲染
         render: function () {
             var that = this;
-            clearTimeout(that.deferIndex);
-            that.deferIndex = setTimeout(function () {
+            clearTimeout(that.obj.deferIndex);
+            that.obj.deferIndex = setTimeout(function () {
                 var md = that.getmd();
                 if (md == "") {
                     that.clear();
@@ -325,7 +327,7 @@
                         that.sethtml(that.md.render(md));
                     }
                 }
-            }, that.defer);
+            }, that.obj.defer);
         }
     }
 
@@ -335,20 +337,27 @@
     netnrmd.version = "1.0.0";
 
     //命令
-    netnrmd.cmd = function (cmdname, txt, callback) {
-        if (typeof callback == "function") {
-            if (callback.call(txt, cmdname) == false) {
+    netnrmd.cmd = function (cmdname, that) {
+        var obj = that.obj, txt = obj.textarea[0];
+
+        //允许响应命令
+        if (that.cmdFilter(cmdname) == false) {
+            return false;
+        }
+
+        //执行命令前回调
+        if (typeof obj.cmdcallback == "function") {
+            if (obj.cmdcallback.call(txt, cmdname) == false) {
                 return false;
             }
         }
 
         var ops = {
             cmd: cmdname,
-            txt: txt,
+            txt: obj.textarea[0],
             before: '',
             defaultvalue: '',
-            after: '',
-            newline: false
+            after: ''
         }
         switch (cmdname) {
             case "bold":
@@ -534,6 +543,13 @@
             }
             netnrmd.insertAfterText(txt, before + text + after);
             netnrmd.setSelectText(txt, pos, pos + text.length);
+
+            //编辑器内容变动回调
+            var that = $(txt).data('netnrmd'), obj = that.obj;
+            if (typeof obj.input == "function" && obj.input.call(that) == false) {
+                return false;
+            }
+            that.render();
         }
     }
 
@@ -580,27 +596,19 @@
                     sel.select();
                 }
             }
+            $(this).data('netnrmd').render();
         } else if (e.ctrlKey) {
             var that = $(this).data('netnrmd'), obj = that.obj,
                 kv = String.fromCharCode(key).toUpperCase();
             if (kv != "") {
                 $(obj.items).each(function () {
                     if (this.key == kv) {
-                        console.log(this.key);
                         if (e.preventDefault) { e.preventDefault() } else { window.event.returnValue = false }
 
                         var cmdname = this.cmd || this.icon;
-                        //允许响应命令
-                        if (that.cmdFilter(cmdname) == false) {
-                            return false;
-                        }
+
                         //执行命令
-                        netnrmd.cmd(cmdname, obj.textarea[0], obj.cmdcallback);
-                        //编辑器内容变动回调
-                        if (typeof obj.input == "function" && obj.input.call(that) == false) {
-                            return false;
-                        }
-                        that.render();
+                        netnrmd.cmd(cmdname, that);
                         return false;
                     }
                 });
