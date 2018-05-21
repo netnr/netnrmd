@@ -282,13 +282,6 @@
             });
             return target;
         },
-        //过滤命令
-        cmdFilter: function (cmd) {
-            if (this.obj.preview && "help,preview,split,full".indexOf(cmd) == -1) {
-                return false;
-            }
-            return true;
-        },
         //赋值md
         setmd: function (md) {
             this.obj.textarea.val(md);
@@ -328,6 +321,26 @@
                     }
                 }
             }, that.obj.defer);
+        },
+        //隐藏
+        hide: function (area) {
+            switch (area) {
+                case "toolbar":
+                    this.obj.toolbar.hide();
+                    break;
+                default:
+                    this.obj.editor.hide();
+            }
+        },
+        //显示
+        show: function (area) {
+            switch (area) {
+                case "toolbar":
+                    this.obj.toolbar.show();
+                    break;
+                default:
+                    this.obj.editor.show();
+            }
         }
     }
 
@@ -341,7 +354,7 @@
         var obj = that.obj, txt = obj.textarea[0];
 
         //允许响应命令
-        if (that.cmdFilter(cmdname) == false) {
+        if (obj.preview && "help,preview,split,full".indexOf(cmdname) == -1) {
             return false;
         }
 
@@ -361,14 +374,14 @@
         }
         switch (cmdname) {
             case "bold":
-                ops.before = '**';
+                ops.before = ' **';
                 ops.defaultvalue = '粗体';
-                ops.after = '**';
+                ops.after = '** ';
                 break;
             case "italic":
-                ops.before = '*';
+                ops.before = ' _';
                 ops.defaultvalue = '斜体';
-                ops.after = '*';
+                ops.after = '_ ';
                 break;
             case "link":
                 ops.before = '[链接说明](';
@@ -401,12 +414,26 @@
                 ops.after = ')';
                 break;
             case "list-ol":
-                ops.before = '1. ';
-                ops.defaultvalue = '列表文本';
+                {
+                    var tbs = txt.value.substring(0, netnrmd.getCursortPosition(txt)).split('\n');
+                    if (tbs[tbs.length - 1] == "") {
+                        ops.before = '1. ';
+                    } else {
+                        ops.before = '\n1. ';
+                    }
+                    ops.defaultvalue = '列表文本';
+                }
                 break;
             case "list-ul":
-                ops.before = '- ';
-                ops.defaultvalue = '列表文本';
+                {
+                    var tbs = txt.value.substring(0, netnrmd.getCursortPosition(txt)).split('\n');
+                    if (tbs[tbs.length - 1] == "") {
+                        ops.before = '- ';
+                    } else {
+                        ops.before = '\n- ';
+                    }
+                    ops.defaultvalue = '列表文本';
+                }
                 break;
             case "table":
                 var cols = ' col 1 | col 2 | col 3 ', hd = ' ---- | ---- | ---- ', nl = '\r\n';

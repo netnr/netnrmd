@@ -10,7 +10,7 @@
 
 ## Install 安装
 
-```
+```js
 //font-awesome （可以修改样式，用图片代替）
 <link href="https://lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
@@ -171,6 +171,16 @@ nmd.clear();
 //render 渲染
 nmd.render();
 
+//hide 隐藏
+nmd.hide();
+//hide 工具条
+nmd.hide('toolbar');
+
+//show 显示
+nmd.show();
+//show 工具条
+nmd.show('toolbar');
+
 
 //插入内容 重要，控制文本域的操作
 var ops = {
@@ -187,7 +197,7 @@ netnrmd.insertxt(ops);
 ```
 ### Textarea Extend 文本域拓展 
 
-```
+```js
 var txtDom = $('#txt')[0];
 
 //获取光标位置
