@@ -50,12 +50,25 @@ console.log($('#txt').data('netnrmd'));
 
 ```js
 var nmd = new netnrmd('#txt', {
-    fullscreen: false,		//全屏
-    splitscreen: true,		//分屏
-    height: 300,			//高度
-    defer: 300,				//延迟解析（毫秒）
-    prefixicon: 'fa fa-',	//矢量图标前缀，font-awesome
-    prefixkey: 'Ctrl+',		//按键支持
+	//全屏
+	fullscreen: false,
+	//分屏
+    splitscreen: true,
+
+	//高度
+    height: 300,
+	//延迟解析（毫秒）
+    defer: 300,
+
+	//自动保存键，默认netnrmd_markdown，一个页面有多netnrmd编辑器时需要对应配置
+	storekey: "key",
+	//有变化自动保存（秒）,默认0不保存
+	storetime: 3,
+
+	//矢量图标前缀，font-awesome
+    prefixicon: 'fa fa-',
+	//按键支持
+    prefixkey: 'Ctrl+',
 
     //解析器，默认使用remarkable，需要引入remarkable
     //指定解析方式，返回解析后的HTML
@@ -67,10 +80,14 @@ var nmd = new netnrmd('#txt', {
     //自定义工具栏
     items: [
         {
-            title: '表情',		//title
-            icon: 'smile-o',	//icon
-            key: 'E',			//keyboard
-            cmd: 'emoji'		//cmd (default icon) 
+			//title
+            title: '表情',
+			//icon
+            icon: 'smile-o',
+			//keyboard
+            key: 'E',
+			//cmd (default icon) 
+            cmd: 'emoji'
         },
         {
             title: '粗体',
@@ -113,7 +130,7 @@ var nmd = new netnrmd('#txt', {
     },
 
     //Trigger command callback
-    //触发命令回调
+	//触发命令回调
     cmdcallback: function (cmd) {
         if (cmd == "emoji") {
             $('#myModalEmoji').modal();
@@ -181,14 +198,24 @@ nmd.show();
 //show 工具条
 nmd.show('toolbar');
 
+//set store 写入本地保存
+nmd.setstore();
+
+//get store 获取本地保存
+nmd.getstore();
 
 //插入内容 重要，控制文本域的操作
 var ops = {
-	cmd: cmdname,				//不为空即可
-    txt: nmd.obj.textarea[0],	//文本域对象
-    before: '**',				//插入的内容前缀
-    defaultvalue: '加粗',		//未选中内容时，默认内容，会选中
-    after: '**'					//插入的内容后缀
+	//不为空即可
+	cmd: cmdname,
+	//文本域对象
+    txt: nmd.obj.textarea[0],
+	//插入的内容前缀
+    before: '**',
+	//未选中内容时，默认内容，会选中
+    defaultvalue: '加粗',
+	//插入的内容后缀
+    after: '**'
 };
 netnrmd.insertxt(ops);
 //有选中内容XXX，输出：**XXX**

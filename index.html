@@ -19,7 +19,7 @@
     <script src="https://lib.baomitu.com/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://lib.baomitu.com/remarkable/1.7.1/remarkable.min.js"></script>
     <link href="src/netnrmd.css" rel="stylesheet" />
-    <script src="src/netnrmd.min.js"></script>
+    <script src="src/netnrmd.js"></script>
     <link href="https://lib.baomitu.com/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
     <script src="https://lib.baomitu.com/highlight.js/9.12.0/highlight.min.js" defer async="async"></script>
 
@@ -78,217 +78,223 @@
             </p>
         </div>
         <div style="margin-bottom:30px">
-            <textarea id="txt" placeholder="netnrmd 组合编辑器 &#10;&#10;markdown语法解析基于remarkable，编辑与解析分离 &#10;&#10;调用任意markdown解析器都能完美的运行"></textarea>
-        </div>
-        <div>
-            <a href="#" id="aread">README</a>
-            <div class="hidden">
-                <script>
-                    $('#aread').click(function () {
-                        var rd = $(this).next();
-                        rd.hasClass('hidden') ? rd.removeClass('hidden') : rd.addClass('hidden');
-                        return false;
-                    })
-                </script>
-                <h2>Install 安装</h2>
-<pre><code class="language-js"><span class="hljs-comment">//font-awesome （可以修改样式，用图片代替）</span>
-&lt;link href=<span class="hljs-string">"https://lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"</span> rel=<span class="hljs-string">"stylesheet"</span>&gt;
+            <textarea id="txt" placeholder="netnrmd 组合编辑器 &#10;&#10;markdown语法解析基于remarkable，编辑与解析分离 &#10;&#10;调用任意markdown解析器都能完美的运行">
+## Usage 使用
 
-<span class="hljs-comment">//jquery</span>
-&lt;script src=<span class="hljs-string">"https://lib.baomitu.com/jquery/1.12.4/jquery.min.js"</span>&gt;<span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></span>
+```js
+var nmd = new netnrmd('#txt');
+console.log(nmd);
+console.log($('#txt').data('netnrmd'));
 
-<span class="hljs-comment">//remarkable 默认解析器（自定义render方法，可不引入）</span>
-&lt;script src=<span class="hljs-string">"https://lib.baomitu.com/remarkable/1.7.1/remarkable.js"</span>&gt;<span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></span>
+//nmd.obj	参数
+//nmd.md	默认remarkable解析器对象
+```
 
-<span class="hljs-comment">//netnrmd 样式</span>
-&lt;link href=<span class="hljs-string">"netnrmd.css"</span> rel=<span class="hljs-string">"stylesheet"</span> /&gt;
-<span class="hljs-comment">//netnrmd</span>
-&lt;script src=<span class="hljs-string">"netnrmd.min.js"</span>&gt;<span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></span>
+## Documentation 文档
 
-<span class="hljs-comment">//highlight 代码高亮（可选）</span>
-&lt;link href=<span class="hljs-string">"https://lib.baomitu.com/highlight.js/9.12.0/styles/github.min.css"</span> rel=<span class="hljs-string">"stylesheet"</span>&gt;
-<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://lib.baomitu.com/highlight.js/9.12.0/highlight.min.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></span>
-</code></pre>
-                <h2>Usage 使用</h2>
-<pre><code class="language-js"><span class="hljs-keyword">var</span> nmd = <span class="hljs-keyword">new</span> netnrmd(<span class="hljs-string">'#txt'</span>);
-<span class="hljs-built_in">console</span>.log(nmd);
-<span class="hljs-built_in">console</span>.log($(<span class="hljs-string">'#txt'</span>).data(<span class="hljs-string">'netnrmd'</span>));
+> [remarkable demo](https://jonschlinkert.github.io/remarkable/demo/)
 
-<span class="hljs-comment">//nmd.obj   参数</span>
-<span class="hljs-comment">//nmd.md    默认remarkable解析器对象</span>
-</code></pre>
-                <h2>Documentation 文档</h2>
-                <blockquote>
-                    <p><a href="https://jonschlinkert.github.io/remarkable/demo/">remarkable demo</a></p>
-                </blockquote>
-                <h3>Options 选项</h3>
-<pre><code class="language-js"><span class="hljs-keyword">var</span> nmd = <span class="hljs-keyword">new</span> netnrmd(<span class="hljs-string">'#txt'</span>, {
-                <span class="hljs-attr">fullscreen</span>: <span class="hljs-literal">false</span>,      <span class="hljs-comment">//全屏</span>
-    splitscreen: <span class="hljs-literal">true</span>,      <span class="hljs-comment">//分屏</span>
-    height: <span class="hljs-number">300</span>,            <span class="hljs-comment">//高度</span>
-    defer: <span class="hljs-number">300</span>,             <span class="hljs-comment">//延迟解析（毫秒）</span>
-    prefixicon: <span class="hljs-string">'fa fa-'</span>,   <span class="hljs-comment">//矢量图标前缀，font-awesome</span>
-    prefixkey: <span class="hljs-string">'Ctrl+'</span>,     <span class="hljs-comment">//按键支持</span>
+### Options 选项
 
-                <span class="hljs-comment">//解析器，默认使用remarkable，需要引入remarkable</span>
-                <span class="hljs-comment">//指定解析方式，返回解析后的HTML</span>
-    render: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">md</span>) </span>{
-                <span class="hljs-built_in">console</span>.log(md)
-                <span class="hljs-keyword">return</span> md;
+```js
+var nmd = new netnrmd('#txt', {
+	//全屏
+	fullscreen: false,
+	//分屏
+    splitscreen: true,
+
+	//高度
+    height: 300,
+	//延迟解析（毫秒）
+    defer: 300,
+
+	//自动保存键，默认netnrmd_markdown，一个页面有多netnrmd编辑器时需要对应配置
+	storekey: "key",
+	//有变化自动保存（秒）,默认0不保存
+	storetime: 3,
+
+	//矢量图标前缀，font-awesome
+    prefixicon: 'fa fa-',
+	//按键支持
+    prefixkey: 'Ctrl+',
+
+    //解析器，默认使用remarkable，需要引入remarkable
+    //指定解析方式，返回解析后的HTML
+    render: function (md) {
+        console.log(md)
+        return md;
     },
 
-                <span class="hljs-comment">//自定义工具栏</span>
+    //自定义工具栏
     items: [
         {
-                <span class="hljs-attr">title</span>: <span class="hljs-string">'表情'</span>,        <span class="hljs-comment">//title</span>
-            icon: <span class="hljs-string">'smile-o'</span>,    <span class="hljs-comment">//icon</span>
-            key: <span class="hljs-string">'E'</span>,           <span class="hljs-comment">//keyboard</span>
-            cmd: <span class="hljs-string">'emoji'</span>        <span class="hljs-comment">//cmd (default icon) </span>
+			//title
+            title: '表情',
+			//icon
+            icon: 'smile-o',
+			//keyboard
+            key: 'E',
+			//cmd (default icon) 
+            cmd: 'emoji'
         },
         {
-                <span class="hljs-attr">title</span>: <span class="hljs-string">'粗体'</span>,
-                <span class="hljs-attr">icon</span>: <span class="hljs-string">'bold'</span>,
-                <span class="hljs-attr">key</span>: <span class="hljs-string">'B'</span>
+            title: '粗体',
+            icon: 'bold',
+            key: 'B'
         }
     ],
 
-                <span class="hljs-comment">//Before rendering the callback, add an expression Icon</span>
-                <span class="hljs-comment">//渲染前回调，添加一个表情图标</span>
-    viewbefore: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
-                <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">this</span>);
+    //Before rendering the callback, add an expression Icon
+    //渲染前回调，添加一个表情图标
+    viewbefore: function () {
+		console.log(this);
 
-                <span class="hljs-keyword">this</span>.items.splice(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, {
-                <span class="hljs-attr">title</span>: <span class="hljs-string">'表情/emoji'</span>,
-                <span class="hljs-attr">icon</span>: <span class="hljs-string">'smile-o'</span>,
-                <span class="hljs-attr">key</span>: <span class="hljs-string">'E'</span>,
-                <span class="hljs-attr">cmd</span>: <span class="hljs-string">'emoji'</span>
+        this.items.splice(0, 0, {
+            title: '表情/emoji',
+            icon: 'smile-o',
+            key: 'E',
+            cmd: 'emoji'
         });
     },
 
-                <span class="hljs-comment">//Markdown editor changes when callback, custom parsing, add: emoji: parsing</span>
-                <span class="hljs-comment">//编辑器变动时回调，自定义解析，添加 :emoji: 解析</span>
-    input: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
-                <span class="hljs-comment">//markdown to html</span>
-                <span class="hljs-comment">//获取markdown解析为html</span>
-                <span class="hljs-keyword">var</span> htm = <span class="hljs-keyword">this</span>.md.render(<span class="hljs-keyword">this</span>.getmd());
+    //Markdown editor changes when callback, custom parsing, add: emoji: parsing
+    //编辑器变动时回调，自定义解析，添加 :emoji: 解析
+    input: function () {
+        //markdown to html
+		//获取markdown解析为html
+        var htm = this.md.render(this.getmd());
 
-                <span class="hljs-comment">//:emoji:</span>
-                <span class="hljs-comment">//emojiParse自己实现</span>
+        //:emoji:
+        //emojiParse自己实现
         htm = emojiParse(htm);
 
-                <span class="hljs-comment">//赋值视图</span>
-                <span class="hljs-comment">//set html</span>
-                <span class="hljs-keyword">this</span>.sethtml(htm);
+        //赋值视图
+        //set html
+        this.sethtml(htm);
 
-                <span class="hljs-comment">//Prevent internal rendering        </span>
-                <span class="hljs-comment">//阻止内部渲染 </span>
-                <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+        //Prevent internal rendering		
+        //阻止内部渲染 
+        return false;
     },
 
-                <span class="hljs-comment">//Trigger command callback</span>
-                <span class="hljs-comment">//触发命令回调</span>
-    cmdcallback: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">cmd</span>) </span>{
-                <span class="hljs-keyword">if</span> (cmd == <span class="hljs-string">"emoji"</span>) {
-            $(<span class="hljs-string">'#myModalEmoji'</span>).modal();
+    //Trigger command callback
+	//触发命令回调
+    cmdcallback: function (cmd) {
+        if (cmd == "emoji") {
+            $('#myModalEmoji').modal();
         }
     }
 });
 
-<span class="hljs-comment">//default remarkable parse，默认解析方式</span>
-<span class="hljs-built_in">console</span>.log(nmd.md.render(<span class="hljs-string">'# netnrmd!'</span>));
-<span class="hljs-comment">// =&gt; &lt;h1&gt;netnrmd!&lt;/h1&gt;</span>
-</code></pre>
-                <h3>Function 方法</h3>
-<pre><code class="language-js"><span class="hljs-keyword">var</span> nmd = <span class="hljs-keyword">new</span> netnrmd(<span class="hljs-string">'#txt'</span>);
-<span class="hljs-built_in">console</span>.log(nmd);
+//default remarkable parse，默认解析方式
+console.log(nmd.md.render('# netnrmd!'));
+```
 
-<span class="hljs-comment">//focus 焦点选中</span>
+### Function 方法
+
+```js
+var nmd = new netnrmd('#txt');
+console.log(nmd);
+
+//focus 焦点选中
 nmd.focus();
 
-<span class="hljs-comment">//set height 设置高度</span>
-nmd.height(<span class="hljs-number">200</span>);
+//set height 设置高度
+nmd.height(200);
 
-<span class="hljs-comment">//toggle Full Screen 切换全屏</span>
+//toggle Full Screen 切换全屏
 nmd.toggleFullScreen();
-nmd.toggleFullScreen(<span class="hljs-literal">true</span>);
-nmd.toggleFullScreen(<span class="hljs-literal">false</span>);
+nmd.toggleFullScreen(true);
+nmd.toggleFullScreen(false);
 
-<span class="hljs-comment">//toggle Split Screen 切换分屏</span>
+//toggle Split Screen 切换分屏
 nmd.toggleSplitScreen();
-nmd.toggleSplitScreen(<span class="hljs-literal">true</span>);
-nmd.toggleSplitScreen(<span class="hljs-literal">false</span>);
+nmd.toggleSplitScreen(true);
+nmd.toggleSplitScreen(false);
 
-<span class="hljs-comment">//toggle Preview 预览切换</span>
+//toggle Preview 预览切换
 nmd.togglePreview();
-nmd.togglePreview(<span class="hljs-literal">true</span>);
-nmd.togglePreview(<span class="hljs-literal">false</span>);
+nmd.togglePreview(true);
+nmd.togglePreview(false);
 
-<span class="hljs-comment">//set markdown 赋值</span>
+//set markdown 赋值
 nmd.setmd(md);
 
-<span class="hljs-comment">//get markdown 取值</span>
+//get markdown 取值
 nmd.getmd();
 
-<span class="hljs-comment">//set html 赋值</span>
+//set html 赋值
 nmd.sethtml(html);
 
-<span class="hljs-comment">//get html 取值</span>
+//get html 取值
 nmd.gethtml();
 
-<span class="hljs-comment">//clear markdown&amp;html 清空</span>
+//clear markdown&html 清空
 nmd.clear();
 
-<span class="hljs-comment">//render 渲染</span>
+//render 渲染
 nmd.render();
 
-<span class="hljs-comment">//hide 隐藏</span>
+//hide 隐藏
 nmd.hide();
-<span class="hljs-comment">//hide 工具条</span>
-nmd.hide(<span class="hljs-string">'toolbar'</span>);
+//hide 工具条
+nmd.hide('toolbar');
 
-<span class="hljs-comment">//show 显示</span>
+//show 显示
 nmd.show();
-<span class="hljs-comment">//show 工具条</span>
-nmd.show(<span class="hljs-string">'toolbar'</span>);
+//show 工具条
+nmd.show('toolbar');
 
+//set store 写入本地保存
+nmd.setstore();
 
-<span class="hljs-comment">//插入内容 重要，控制文本域的操作</span>
-<span class="hljs-keyword">var</span> ops = {
-                <span class="hljs-attr">cmd</span>: cmdname,               <span class="hljs-comment">//不为空即可</span>
-    txt: nmd.obj.textarea[<span class="hljs-number">0</span>],   <span class="hljs-comment">//文本域对象</span>
-    before: <span class="hljs-string">'**'</span>,               <span class="hljs-comment">//插入的内容前缀</span>
-    defaultvalue: <span class="hljs-string">'加粗'</span>,     <span class="hljs-comment">//未选中内容时，默认内容，会选中</span>
-    after: <span class="hljs-string">'**'</span>                 <span class="hljs-comment">//插入的内容后缀</span>
+//get store 获取本地保存
+nmd.getstore();
+
+//插入内容 重要，控制文本域的操作
+var ops = {
+	//不为空即可
+	cmd: cmdname,
+	//文本域对象
+    txt: nmd.obj.textarea[0],
+	//插入的内容前缀
+    before: '**',
+	//未选中内容时，默认内容，会选中
+    defaultvalue: '加粗',
+	//插入的内容后缀
+    after: '**'
 };
 netnrmd.insertxt(ops);
-<span class="hljs-comment">//有选中内容XXX，输出：**XXX**</span>
-<span class="hljs-comment">//未选择内容，输出：**加粗**</span>
-<span class="hljs-comment">//before 到 after 之间的内容会选中</span>
-</code></pre>
-                <h3>Textarea Extend 文本域拓展</h3>
-<pre><code class="language-js"><span class="hljs-keyword">var</span> txtDom = $(<span class="hljs-string">'#txt'</span>)[<span class="hljs-number">0</span>];
+//有选中内容XXX，输出：**XXX**
+//未选择内容，输出：**加粗**
+//before 到 after 之间的内容会选中
+```
+### Textarea Extend 文本域拓展 
 
-<span class="hljs-comment">//获取光标位置</span>
+```js
+var txtDom = $('#txt')[0];
+
+//获取光标位置
 netnrmd.getCursortPosition(txtDom);
 
-<span class="hljs-comment">//设置光标位置</span>
-netnrmd.getCursortPosition(txtDom, <span class="hljs-number">3</span>);
+//设置光标位置
+netnrmd.getCursortPosition(txtDom, 3);
 
-<span class="hljs-comment">//获取选中文字</span>
+//获取选中文字
 netnrmd.getSelectText(txtDom);
 
-<span class="hljs-comment">//选中特定范围的文本</span>
-netnrmd.setSelectText(txtDom, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>);
+//选中特定范围的文本
+netnrmd.setSelectText(txtDom, 1, 3);
 
-<span class="hljs-comment">//在光标后插入文本</span>
-netnrmd.insertAfterText(txtDom, <span class="hljs-string">"text"</span>);
-</code></pre>
-                <h2>Authors 作者</h2>
-                <ul>
-                    <li><a href="https://www.netnr.com">netnr</a> <a href="https://github.com/netnr">github/netnr</a></li>
-                    <li>Jon Schlinkert <a href="https://github.com/jonschlinkert">github/jonschlinkert</a></li>
-                </ul>
-            </div>
+//在光标后插入文本
+netnrmd.insertAfterText(txtDom, "text");
+```
+
+## Authors 作者
+
+- [netnr](https://www.netnr.com) [github/netnr](https://github.com/netnr) 
+- Jon Schlinkert [github/jonschlinkert](https://github.com/jonschlinkert)
+</textarea>
         </div>
     </div>
 
@@ -299,8 +305,14 @@ netnrmd.insertAfterText(txtDom, <span class="hljs-string">"text"</span>);
     </footer>
 
     <script>
-        var nmd = new netnrmd('#txt');
+        var nmd = new netnrmd('#txt', {
+            storetime: 3,
+            height: 550
+        });
         console.log(nmd);
+
+        //渲染默认值
+        nmd.render();
     </script>
 </body>
 </html>

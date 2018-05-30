@@ -1,12 +1,12 @@
 ﻿/*                                                    *\
- *  netnrmd v1.0.0
+ *  netnrmd v1.0.1
  *  markdown语法解析基于remarkable，编辑与解析分离
  *  调用任意markdown解析器都能完美的运行
  *  
  *  Site：https://md.netnr.com
  *  GitHub：https://github.com/netnr/netnrmd
  *  Gitee：https://gitee.com/netnr/netnrmd
- *  Date：2018-05-09
+ *  Date：2018-05-30
  *  
  *  Author：netnr
  *  Domain：https://www.netnr.com
@@ -133,9 +133,9 @@
                 e = e || window.event;
                 //按键支持
                 netnrmd.supperkey.call(this, e);
-            }).on('keyup paste cut mouseup scroll', function () {
+            }).on('keyup paste cut mouseup scroll', function (e) {
                 //滚动条同步
-                netnrmd.syncscroll(this, 100);
+                netnrmd.syncscroll(this, 10);
             });
 
             //编辑器父容器
@@ -192,8 +192,24 @@
             this.togglePreview(obj.preview = netnrmd.dv(obj.preview, false));
             //高度
             this.height(obj.height = netnrmd.dv(obj.height, 250));
-            //清空
-            this.clear();
+            //本地保存键
+            obj.storekey = netnrmd.dv(obj.storekey, "netnrmd_markdown");
+            //本地保存时间，单位：秒
+            obj.storetime = netnrmd.dv(obj.storetime, 0);
+            //载入本地保存
+            if (obj.storetime > 0) {
+                this.getstore();
+            }
+            //本地保存任务
+            setInterval(function () {
+                if (obj.storetime > 0) {
+                    var preval = obj.textarea[0]["preval"] || "";
+                    if (preval != obj.textarea.val()) {
+                        obj.textarea[0]["preval"] = obj.textarea.val();
+                        that.setstore();
+                    }
+                }
+            }, obj.storetime > 0 ? 1000 * obj.storetime : 1000);
 
             obj.textarea.data('netnrmd', this);
             return this;
@@ -340,6 +356,18 @@
                     break;
                 default:
                     this.obj.editor.show();
+            }
+        },
+        //写入本地保存
+        setstore: function () {
+            localStorage[this.obj.storekey] = this.getmd();
+        },
+        //获取本地保存
+        getstore: function () {
+            var md = localStorage[this.obj.storekey]
+            if (md) {
+                this.setmd(md);
+                this.render();
             }
         }
     }
@@ -585,8 +613,8 @@
         clearTimeout(txtDom.syncdefer);
         txtDom.syncdefer = setTimeout(function () {
             var obj = $(txtDom).data('netnrmd').obj,
-                hratio = txtDom.scrollTop / (txtDom.scrollHeight - $(txtDom).height());
-            obj.view.animate({ scrollTop: obj.view[0].scrollHeight * hratio }, defer);
+                hratio = txtDom.scrollTop / (txtDom.scrollHeight - $(txtDom).height() - 4);
+            obj.view[0].scrollTop = (obj.view[0].scrollHeight - obj.view.height()) * hratio;
         }, defer);
     }
 

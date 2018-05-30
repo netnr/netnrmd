@@ -125,6 +125,7 @@
 
 /*视图渲染全局样式*/
 .netnrmd-body {
+    line-height: 1.5em;
     word-wrap: break-word;
     word-break: break-word;
 }
@@ -148,13 +149,14 @@
         }
 
     .netnrmd-body blockquote {
-        margin: 0;
-        padding: 10px 20px;
-        border-left: 5px solid #009688;
+        padding: 0 1em;
+        color: #6a737d;
+        border-left: .25em solid #009a61;
     }
 
     .netnrmd-body h1, .netnrmd-body h2, .netnrmd-body h3, .netnrmd-body h4, .netnrmd-body h5, .netnrmd-body h6 {
         margin: 20px 0 10px;
+        font-family: 'Microsoft YaHei';
     }
 
     .netnrmd-body pre {
