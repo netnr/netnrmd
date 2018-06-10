@@ -224,7 +224,7 @@
             if (height != null) {
                 if (force || !this.obj.fullscreen) {
                     !this.obj.fullscreen && (this.obj.height = height);
-                    var weh = height - (c.markdown.obj.toolbar.is(':hidden') ? 0 : this.obj.toolbar.height());
+                    var weh = height - (this.obj.toolbar.is(':hidden') ? 0 : this.obj.toolbar.height());
                     this.obj.write.css('height', weh);
                     this.obj.view.css('height', weh);
                 }
