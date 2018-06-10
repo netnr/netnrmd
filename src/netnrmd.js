@@ -224,7 +224,7 @@
             if (height != null) {
                 if (force || !this.obj.fullscreen) {
                     !this.obj.fullscreen && (this.obj.height = height);
-                    var weh = height - this.obj.toolbar.height();
+                    var weh = height - (c.markdown.obj.toolbar.is(':hidden') ? 0 : this.obj.toolbar.height());
                     this.obj.write.css('height', weh);
                     this.obj.view.css('height', weh);
                 }
@@ -375,7 +375,7 @@
     netnrmd.fn.init.prototype = netnrmd.fn;
 
     //版本
-    netnrmd.version = "1.0.0";
+    netnrmd.version = "1.0.1";
 
     //命令
     netnrmd.cmd = function (cmdname, that) {
