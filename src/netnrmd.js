@@ -6,7 +6,7 @@
  *  Site：https://md.netnr.com
  *  GitHub：https://github.com/netnr/netnrmd
  *  Gitee：https://gitee.com/netnr/netnrmd
- *  Date：2018-05-30
+ *  Date：2018-06-13
  *  
  *  Author：netnr
  *  Domain：https://www.netnr.com
@@ -673,4 +673,4 @@
 
     window.netnrmd = netnrmd;
 
-})(window)
+})(window);

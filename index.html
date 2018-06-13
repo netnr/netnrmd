@@ -77,11 +77,6 @@
             <p>markdown语法解析基于remarkable，编辑与解析分离</p>
             <p>调用任意markdown解析器都能完美的运行</p>
         </div>
-        <div>
-            <p>
-                自定义工具栏，添加Emoji表情 <a href="https://chat.netnr.com" target="_blank">Emoji Demo</a>
-            </p>
-        </div>
         <div style="margin-bottom:30px">
             <textarea id="txt" placeholder="netnrmd 组合编辑器 &#10;&#10;markdown语法解析基于remarkable，编辑与解析分离 &#10;&#10;调用任意markdown解析器都能完美的运行">
 ## Usage 使用
@@ -313,7 +308,7 @@ netnrmd.insertAfterText(txtDom, "text");
     <script>
         var nmd = new netnrmd('#txt', {
             storetime: 3,
-            height: 550
+            height: 600
         });
         console.log(nmd);
 
