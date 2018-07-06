@@ -1,12 +1,12 @@
 ﻿/*                                                    *\
- *  netnrmd v1.0.1
+ *  netnrmd v1.0.2
  *  markdown语法解析基于remarkable，编辑与解析分离
  *  调用任意markdown解析器都能完美的运行
  *  
  *  Site：https://md.netnr.com
  *  GitHub：https://github.com/netnr/netnrmd
  *  Gitee：https://gitee.com/netnr/netnrmd
- *  Date：2018-06-13
+ *  Date：2018-07-06
  *  
  *  Author：netnr
  *  Domain：https://www.netnr.com
@@ -316,10 +316,11 @@
         gethtml: function () {
             return this.obj.view.html();
         },
-        //清理md、html
+        //清理md、html、本地缓存
         clear: function () {
             this.setmd('');
             this.sethtml('<div class="netnrmd-view-empty">预览区域</div>');
+            this.setstore();
         },
         //渲染
         render: function () {
@@ -375,7 +376,7 @@
     netnrmd.fn.init.prototype = netnrmd.fn;
 
     //版本
-    netnrmd.version = "1.0.1";
+    netnrmd.version = "1.0.2";
 
     //命令
     netnrmd.cmd = function (cmdname, that) {
