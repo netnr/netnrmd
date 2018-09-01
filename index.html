@@ -44,20 +44,24 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="jumbotron">
-            <h1>
-                netnrmd
-                <small style="font-size:.4em;">
-                    <a href="https://github.com/netnr/netnrmd">GitHub</a>&nbsp;
-                    <a href="https://gitee.com/netnr/netnrmd">Gitee</a>
-                </small>
-            </h1>
-            <p>netnrmd 组合编辑器</p>
-            <p>markdown语法解析基于remarkable，编辑与解析分离</p>
-            <p>调用任意markdown解析器都能完美的运行</p>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <h2>
+                    netnrmd
+                    <small>
+                        <a href="https://github.com/netnr/netnrmd">GitHub</a>&nbsp;
+                        <a href="https://gitee.com/netnr/netnrmd">Gitee</a>
+                    </small>
+                </h2>
+                <ul>
+                    <li>netnrmd 组合编辑器</li>
+                    <li>markdown语法解析基于remarkable，编辑与解析分离</li>
+                    <li>调用任意markdown解析器都能完美的运行</li>
+                </ul>
+            </div>
         </div>
-        <div style="margin-bottom:30px">
+        <div>
             <textarea id="txt" placeholder="netnrmd 组合编辑器 &#10;&#10;markdown语法解析基于remarkable，编辑与解析分离 &#10;&#10;调用任意markdown解析器都能完美的运行">
 ## Usage 使用
 
@@ -286,7 +290,7 @@ netnrmd.insertAfterText(txtDom, "text");
     <script>
         var nmd = new netnrmd('#txt', {
             storetime: 3,
-            height: 600
+            height: 770
         });
         console.log(nmd);
 
