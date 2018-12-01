@@ -1,15 +1,14 @@
 ﻿/*                                                    *\
- *  netnrmd v1.0.2
+ *  netnrmd v1.1.0
  *  markdown语法解析基于remarkable，编辑与解析分离
  *  调用任意markdown解析器都能完美的运行
  *  
  *  Site：https://md.netnr.com
  *  GitHub：https://github.com/netnr/netnrmd
  *  Gitee：https://gitee.com/netnr/netnrmd
- *  Date：2018-07-06
+ *  Date：2018-12-01
  *  
  *  Author：netnr
- *  Domain：https://www.netnr.com
  *                                                   */
 
 (function (window) {
@@ -151,16 +150,14 @@
             $(obj.items).each(function () {
                 var lcs = this.float == "right" ? 'float-right' : '',
                     keytip = this.key ? obj.prefixkey + this.key : '';
-                lis.push('<li class="' + lcs + '"><a href="#' + (this.cmd || this.icon) + '" class="' + obj.prefixicon + this.icon + '" title="' + this.title + ' ' + keytip + '"></a></li>');
+                lis.push('<li class="' + lcs + '"><span data-cmd="' + (this.cmd || this.icon) + '" class="' + obj.prefixicon + this.icon + '" title="' + this.title + ' ' + keytip + '"></span></li>');
             });
             //工具条加持命令响应
             obj.toolbar = $('<div class="netnrmd-toolbar"><ul class="netnrmd-menu"></li></div>').children().append($(lis.join(''))).click(function (e) {
                 e = e || window.event;
                 var target = e.target || window.event.target;
-                if (target.nodeName == "A") {
-                    if (e.preventDefault) { e.preventDefault() } else { window.event.returnValue = false }
-                    var cmdname = target.hash.substring(1);
-
+                if (target.nodeName == "SPAN") {
+                    var cmdname = target.getAttribute('data-cmd');
                     //执行命令
                     netnrmd.cmd(cmdname, that);
                 }
@@ -224,8 +221,9 @@
             if (height != null) {
                 if (force || !this.obj.fullscreen) {
                     !this.obj.fullscreen && (this.obj.height = height);
-                    var weh = height - (this.obj.toolbar.is(':hidden') ? 0 : this.obj.toolbar.height());
+                    var weh = height - (this.obj.toolbar.is(':hidden') ? 0 : this.obj.toolbar.outerHeight());
                     this.obj.write.css('height', weh);
+                    this.obj.textarea.css('height', weh);
                     this.obj.view.css('height', weh);
                 }
                 return this;
@@ -290,8 +288,8 @@
         //根据命令获取工具条的对象
         getToolItemTarget: function (cmd) {
             var target;
-            this.obj.toolbar.find('a').each(function () {
-                if (this.hash == "#" + cmd) {
+            this.obj.toolbar.find('span').each(function () {
+                if (this.getAttribute('data-cmd') == cmd) {
                     target = this;
                     return false;
                 }
@@ -376,7 +374,7 @@
     netnrmd.fn.init.prototype = netnrmd.fn;
 
     //版本
-    netnrmd.version = "1.0.2";
+    netnrmd.version = "1.1.0";
 
     //命令
     netnrmd.cmd = function (cmdname, that) {

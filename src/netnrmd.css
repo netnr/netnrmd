@@ -43,13 +43,14 @@
             float: right;
         }
 
-        .netnrmd-menu li a {
+        .netnrmd-menu li span {
             color: #999;
             width: 25px;
             height: 25px;
             display: block;
             cursor: pointer;
             overflow: hidden;
+            user-select: none;
             line-height: 25px;
             text-align: center;
             text-decoration: none;
@@ -57,7 +58,7 @@
             box-sizing: content-box;
         }
 
-            .netnrmd-menu li a:hover, .netnrmd-menu li a.active {
+            .netnrmd-menu li span:hover, .netnrmd-menu li span.active {
                 color: green;
                 border-color: #f6f6f6;
                 background-color: #f6f6f6;
@@ -74,12 +75,14 @@
 }
 
     .netnrmd-write textarea {
+        padding: 0;
         width: 100%;
         height: 100%;
         border: none;
         resize: none;
         outline: none;
         box-sizing: border-box;
+        box-shadow: none !important;
     }
 
 /*渲染视图*/
@@ -123,44 +126,494 @@
     text-align: center;
 }
 
-/*视图渲染全局样式*/
-.netnrmd-body {
-    line-height: 1.5em;
-    word-wrap: break-word;
-    word-break: break-word;
+/*代码高亮*/
+.hljs {
+    display: block;
+    overflow-x: auto;
+    padding: 0.5em;
+    color: #333;
+    background: #f8f8f8
 }
 
-    .netnrmd-body * {
-        max-width: 100%;
+.hljs-comment, .hljs-quote {
+    color: #998;
+    font-style: italic
+}
+
+.hljs-keyword, .hljs-selector-tag, .hljs-subst {
+    color: #333;
+    font-weight: bold
+}
+
+.hljs-number, .hljs-literal, .hljs-variable, .hljs-template-variable, .hljs-tag .hljs-attr {
+    color: #008080
+}
+
+.hljs-string, .hljs-doctag {
+    color: #d14
+}
+
+.hljs-title, .hljs-section, .hljs-selector-id {
+    color: #900;
+    font-weight: bold
+}
+
+.hljs-subst {
+    font-weight: normal
+}
+
+.hljs-type, .hljs-class .hljs-title {
+    color: #458;
+    font-weight: bold
+}
+
+.hljs-tag, .hljs-name, .hljs-attribute {
+    color: #000080;
+    font-weight: normal
+}
+
+.hljs-regexp, .hljs-link {
+    color: #009926
+}
+
+.hljs-symbol, .hljs-bullet {
+    color: #990073
+}
+
+.hljs-built_in, .hljs-builtin-name {
+    color: #0086b3
+}
+
+.hljs-meta {
+    color: #999;
+    font-weight: bold
+}
+
+.hljs-deletion {
+    background: #fdd
+}
+
+.hljs-addition {
+    background: #dfd
+}
+
+.hljs-emphasis {
+    font-style: italic
+}
+
+.hljs-strong {
+    font-weight: bold
+}
+
+/*视图渲染全局样式*/
+.netnrmd-body {
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+    color: #24292e;
+    line-height: 1.5;
+    word-wrap: break-word
+}
+
+    .netnrmd-body .octicon {
+        display: inline-block;
+        vertical-align: text-top;
+        fill: currentColor
     }
+
+    .netnrmd-body a {
+        text-decoration: none;
+    }
+
+        .netnrmd-body a:active, .netnrmd-body a:hover {
+            outline-width: 0;
+            text-decoration: underline;
+        }
+
+    .netnrmd-body strong {
+        font-weight: inherit
+    }
+
+    .netnrmd-body strong {
+        font-weight: bolder
+    }
+
+    .netnrmd-body h1 {
+        font-size: 2em;
+        margin: .67em 0
+    }
+
+    .netnrmd-body img {
+        border-style: none
+    }
+
+    .netnrmd-body code, .netnrmd-body pre {
+        font-family: monospace,monospace;
+        font-size: 1em
+    }
+
+    .netnrmd-body hr {
+        box-sizing: content-box;
+        height: 0;
+        overflow: visible
+    }
+
+    .netnrmd-body input {
+        font: inherit;
+        margin: 0
+    }
+
+    .netnrmd-body input {
+        overflow: visible
+    }
+
+    .netnrmd-body [type=checkbox] {
+        box-sizing: border-box;
+        padding: 0
+    }
+
+    .netnrmd-body * {
+        box-sizing: border-box
+    }
+
+    .netnrmd-body input {
+        font-family: inherit;
+        font-size: inherit;
+        line-height: inherit
+    }
+
+    .netnrmd-body strong {
+        font-weight: 600
+    }
+
+    .netnrmd-body hr {
+        height: 0;
+        margin: 15px 0;
+        overflow: hidden;
+        background: 0 0;
+        border: 0;
+        border-bottom: 1px solid #dfe2e5
+    }
+
+        .netnrmd-body hr::before {
+            display: table;
+            content: ""
+        }
+
+        .netnrmd-body hr::after {
+            display: table;
+            clear: both;
+            content: ""
+        }
 
     .netnrmd-body table {
         border-spacing: 0;
-        border-collapse: collapse;
+        border-collapse: collapse
     }
 
-        .netnrmd-body table tr th {
-            font-weight: 600;
+    .netnrmd-body td, .netnrmd-body th {
+        padding: 0
+    }
+
+    .netnrmd-body h1, .netnrmd-body h2, .netnrmd-body h3, .netnrmd-body h4, .netnrmd-body h5, .netnrmd-body h6 {
+        margin-top: 0;
+        margin-bottom: 0
+    }
+
+    .netnrmd-body h1 {
+        font-size: 32px;
+        font-weight: 600
+    }
+
+    .netnrmd-body h2 {
+        font-size: 24px;
+        font-weight: 600
+    }
+
+    .netnrmd-body h3 {
+        font-size: 20px;
+        font-weight: 600
+    }
+
+    .netnrmd-body h4 {
+        font-size: 16px;
+        font-weight: 600
+    }
+
+    .netnrmd-body h5 {
+        font-size: 14px;
+        font-weight: 600
+    }
+
+    .netnrmd-body h6 {
+        font-size: 12px;
+        font-weight: 600
+    }
+
+    .netnrmd-body p {
+        margin-top: 0;
+        margin-bottom: 10px
+    }
+
+    .netnrmd-body blockquote {
+        margin: 0
+    }
+
+    .netnrmd-body ul, .netnrmd-body ol {
+        padding-left: 0;
+        margin-top: 0;
+        margin-bottom: 0
+    }
+
+        .netnrmd-body ol ol, .netnrmd-body ul ol {
+            list-style-type: lower-roman
         }
 
-        .netnrmd-body table tr th, .netnrmd-body table tr td {
-            padding: 5px 12px;
-            border: 1px solid #858d96;
+            .netnrmd-body ul ul ol, .netnrmd-body ul ol ol, .netnrmd-body ol ul ol, .netnrmd-body ol ol ol {
+                list-style-type: lower-alpha
+            }
+
+    .netnrmd-body dd {
+        margin-left: 0
+    }
+
+    .netnrmd-body code {
+        font-family: sfmono-regular,Consolas,liberation mono,Menlo,Courier,monospace;
+        font-size: 12px
+    }
+
+    .netnrmd-body pre {
+        margin-top: 0;
+        margin-bottom: 0;
+        font-family: sfmono-regular,Consolas,liberation mono,Menlo,Courier,monospace;
+        font-size: 12px
+    }
+
+    .netnrmd-body .octicon {
+        vertical-align: text-bottom
+    }
+
+    .netnrmd-body::before {
+        display: table;
+        content: ""
+    }
+
+    .netnrmd-body::after {
+        display: table;
+        clear: both;
+        content: ""
+    }
+
+    .netnrmd-body > *:first-child {
+        margin-top: 0 !important
+    }
+
+    .netnrmd-body > *:last-child {
+        margin-bottom: 0 !important
+    }
+
+    .netnrmd-body a:not([href]) {
+        color: inherit;
+        text-decoration: none
+    }
+
+    .netnrmd-body .anchor {
+        float: left;
+        padding-right: 4px;
+        margin-left: -20px;
+        line-height: 1
+    }
+
+        .netnrmd-body .anchor:focus {
+            outline: none
         }
+
+    .netnrmd-body p, .netnrmd-body blockquote, .netnrmd-body ul, .netnrmd-body ol, .netnrmd-body dl, .netnrmd-body table, .netnrmd-body pre {
+        margin-top: 0;
+        margin-bottom: 16px
+    }
+
+    .netnrmd-body hr {
+        height: .25em;
+        padding: 0;
+        margin: 24px 0;
+        background-color: #e1e4e8;
+        border: 0
+    }
 
     .netnrmd-body blockquote {
         padding: 0 1em;
         color: #6a737d;
-        border-left: .25em solid #009a61;
+        border-left: .25em solid #dfe2e5
     }
 
+        .netnrmd-body blockquote > :first-child {
+            margin-top: 0
+        }
+
+        .netnrmd-body blockquote > :last-child {
+            margin-bottom: 0
+        }
+
     .netnrmd-body h1, .netnrmd-body h2, .netnrmd-body h3, .netnrmd-body h4, .netnrmd-body h5, .netnrmd-body h6 {
-        margin: 20px 0 10px;
-        font-family: 'Microsoft YaHei';
+        margin-top: 24px;
+        margin-bottom: 16px;
+        font-weight: 600;
+        line-height: 1.25
+    }
+
+
+    .netnrmd-body h1 {
+        padding-bottom: .3em;
+        font-size: 2em;
+    }
+
+    .netnrmd-body h2 {
+        padding-bottom: .3em;
+        font-size: 1.5em;
+    }
+
+    .netnrmd-body h3 {
+        font-size: 1.25em
+    }
+
+    .netnrmd-body h4 {
+        font-size: 1em
+    }
+
+    .netnrmd-body h5 {
+        font-size: .875em
+    }
+
+    .netnrmd-body h6 {
+        font-size: .85em;
+        color: #6a737d
+    }
+
+    .netnrmd-body ul, .netnrmd-body ol {
+        padding-left: 2em
+    }
+
+        .netnrmd-body ul ul, .netnrmd-body ul ol, .netnrmd-body ol ol, .netnrmd-body ol ul {
+            margin-top: 0;
+            margin-bottom: 0
+        }
+
+    .netnrmd-body li {
+        word-wrap: break-word;
+    }
+
+        .netnrmd-body li > p {
+            margin-top: 16px
+        }
+
+        .netnrmd-body li + li {
+            margin-top: .25em
+        }
+
+    .netnrmd-body dl {
+        padding: 0
+    }
+
+        .netnrmd-body dl dt {
+            padding: 0;
+            margin-top: 16px;
+            font-size: 1em;
+            font-style: italic;
+            font-weight: 600
+        }
+
+        .netnrmd-body dl dd {
+            padding: 0 16px;
+            margin-bottom: 16px
+        }
+
+    .netnrmd-body table {
+        display: block;
+        width: 100%;
+        overflow: auto
+    }
+
+        .netnrmd-body table th {
+            font-weight: 600
+        }
+
+        .netnrmd-body table th, .netnrmd-body table td {
+            padding: 6px 13px;
+            border: 1px solid #dfe2e5
+        }
+
+        .netnrmd-body table tr {
+            background-color: #fff;
+            border-top: 1px solid #c6cbd1
+        }
+
+            .netnrmd-body table tr:nth-child(2n) {
+                background-color: #f6f8fa
+            }
+
+    .netnrmd-body img {
+        max-width: 100%;
+        box-sizing: content-box;
+        background-color: #fff
+    }
+
+        .netnrmd-body img[align=right] {
+            padding-left: 20px
+        }
+
+        .netnrmd-body img[align=left] {
+            padding-right: 20px
+        }
+
+    .netnrmd-body code {
+        padding: .2em .4em;
+        margin: 0;
+        font-size: 85%;
+        background-color: rgba(27,31,35,.05);
+        border-radius: 3px
     }
 
     .netnrmd-body pre {
-        padding: 10px;
-        white-space: pre-wrap;
-        border: 1px solid #e1e1e8;
+        word-wrap: normal
+    }
+
+        .netnrmd-body pre > code {
+            padding: 0;
+            margin: 0;
+            font-size: 100%;
+            word-break: normal;
+            white-space: pre;
+            background: 0 0;
+            border: 0
+        }
+
+
+    .netnrmd-body pre {
+        padding: 16px;
+        overflow: auto;
+        font-size: 85%;
+        line-height: 1.45;
+        background-color: #f6f8fa;
+        border-radius: 3px
+    }
+
+        .netnrmd-body pre code {
+            display: inline;
+            max-width: none;
+            padding: 0;
+            margin: 0;
+            overflow: visible;
+            line-height: inherit;
+            word-wrap: normal;
+            border: 0
+        }
+
+    .netnrmd-body :checked + .radio-label {
+        position: relative;
+        z-index: 1;
+        border-color: #0366d6
+    }
+
+    .netnrmd-body hr {
+        border-bottom-color: #eee
     }

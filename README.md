@@ -2,9 +2,9 @@
 
 > Markdown Combinatorial editor | 组合编辑器
 
-> markdown语法解析基于remarkable，编辑与解析分离
+> markdown 语法解析基于 `remarkable` ，编辑与解析分离
 
-> 调用任意markdown解析器都能完美的运行
+> 调用任意 markdown 解析器都能完美的运行
 
 > <https://md.netnr.com>
 
