@@ -26,7 +26,6 @@
 <script src="netnrmd.min.js"></script>
 
 //highlight 代码高亮（可选）
-<link href="https://lib.baomitu.com/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
 <script src="https://lib.baomitu.com/highlight.js/9.12.0/highlight.min.js"></script>
 ```
 
