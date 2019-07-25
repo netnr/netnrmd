@@ -49,10 +49,8 @@ console.log($('#txt').data('netnrmd'));
 
 ```js
 var nmd = new netnrmd('#txt', {
-	//全屏
-	fullscreen: false,
-	//分屏
-    splitscreen: true,
+	//视图,1输入，2分屏，3预览，默认2
+	viewmodel: 2
 
 	//高度
     height: 300,
@@ -61,8 +59,8 @@ var nmd = new netnrmd('#txt', {
 
 	//自动保存键，默认netnrmd_markdown，一个页面有多netnrmd编辑器时需要对应配置
 	storekey: "key",
-	//有变化自动保存（秒）,默认0不保存
-	storetime: 3,
+	//默认有变化自动保存
+	autosave: true,
 
 	//矢量图标前缀，font-awesome
     prefixicon: 'fa fa-',
@@ -154,20 +152,14 @@ nmd.focus();
 //set height 设置高度
 nmd.height(200);
 
-//toggle Full Screen 切换全屏
-nmd.toggleFullScreen();
-nmd.toggleFullScreen(true);
-nmd.toggleFullScreen(false);
-
-//toggle Split Screen 切换分屏
-nmd.toggleSplitScreen();
-nmd.toggleSplitScreen(true);
-nmd.toggleSplitScreen(false);
-
-//toggle Preview 预览切换
-nmd.togglePreview();
-nmd.togglePreview(true);
-nmd.togglePreview(false);
+//toggle View 视图切换，默认2、1、3循环
+nmd.toggleView();
+//输入
+nmd.toggleView(1);
+//分屏
+nmd.toggleView(2);
+//预览
+nmd.toggleView(3);
 
 //set markdown 赋值
 nmd.setmd(md);

@@ -1,12 +1,12 @@
 ﻿/*                                                    *\
- *  netnrmd v1.1.0
+ *  netnrmd v1.2.0
  *  markdown语法解析基于remarkable，编辑与解析分离
  *  调用任意markdown解析器都能完美的运行
  *  
  *  Site：https://md.netnr.com
  *  GitHub：https://github.com/netnr/netnrmd
  *  Gitee：https://gitee.com/netnr/netnrmd
- *  Date：2018-12-01
+ *  Date：2019-07-25
  *  
  *  Author：netnr
  *                                                   */
@@ -113,11 +113,6 @@
                         icon: 'columns',
                         cmd: 'split',
                         float: 'right'
-                    }, {
-                        title: '预览/preview',
-                        icon: 'eye',
-                        cmd: 'preview',
-                        float: 'right'
                     }
                 ]);
 
@@ -127,6 +122,12 @@
                 if (typeof obj.input == "function" && obj.input.call(that) == false) {
                     return false;
                 }
+
+                //自动保存
+                if (obj.autosave) {
+                    that.setstore();
+                }
+
                 that.render();
             }).keydown(function (e) {
                 e = e || window.event;
@@ -183,30 +184,18 @@
                     that.height($(window).height(), true);
                 }
             });
-            //分屏
-            this.toggleSplitScreen(obj.splitscreen = netnrmd.dv(obj.splitscreen, true));
-            //预览
-            this.togglePreview(obj.preview = netnrmd.dv(obj.preview, false));
+            //视图模式：1输入|2分屏|3预览
+            obj.viewmodel = netnrmd.dv(obj.viewmodel, 2);
             //高度
             this.height(obj.height = netnrmd.dv(obj.height, 250));
             //本地保存键
             obj.storekey = netnrmd.dv(obj.storekey, "netnrmd_markdown");
-            //本地保存时间，单位：秒
-            obj.storetime = netnrmd.dv(obj.storetime, 0);
+            //本地自动保存
+            obj.autosave = netnrmd.dv(obj.autosave, true);
             //载入本地保存
-            if (obj.storetime > 0) {
+            if (obj.autosave > 0) {
                 this.getstore();
             }
-            //本地保存任务
-            setInterval(function () {
-                if (obj.storetime > 0) {
-                    var preval = obj.textarea[0]["preval"] || "";
-                    if (preval != obj.textarea.val()) {
-                        obj.textarea[0]["preval"] = obj.textarea.val();
-                        that.setstore();
-                    }
-                }
-            }, obj.storetime > 0 ? 1000 * obj.storetime : 1000);
 
             obj.textarea.data('netnrmd', this);
             return this;
@@ -250,7 +239,7 @@
         },
         //分屏切换
         toggleSplitScreen: function (splitscreen) {
-            var obj = this.obj, tit = this.getToolItemTarget('split');
+            var obj = this.obj;
             obj.splitscreen = !obj.splitscreen;
             if (splitscreen != null) {
                 obj.splitscreen = splitscreen;
@@ -260,16 +249,14 @@
 
                 obj.write.addClass('netnrmd-write-w100');
                 obj.view.addClass('netnrmd-view-hidden');
-                $(tit).removeClass('active');
             } else {
                 obj.write.removeClass('netnrmd-write-w100');
                 obj.view.removeClass('netnrmd-view-hidden');
-                $(tit).addClass('active');
             }
         },
         //预览切换
         togglePreview: function (preview) {
-            var obj = this.obj, tit = this.getToolItemTarget('preview');
+            var obj = this.obj;
             obj.preview = !obj.preview;
             if (preview != null) {
                 obj.preview = preview;
@@ -278,11 +265,33 @@
                 this.toggleSplitScreen(1);
                 obj.write.addClass('netnrmd-write-hidden');
                 obj.view.addClass('netnrmd-view-w100');
-                $(tit).addClass('active');
             } else {
                 obj.write.removeClass('netnrmd-write-hidden');
                 obj.view.removeClass('netnrmd-view-w100');
-                $(tit).removeClass('active');
+            }
+        },
+        //视图切换
+        toggleView: function (n) {
+            if (n == null) {
+                n = this.obj.viewmodel - 1;
+                if (n < 1) {
+                    n = 3;
+                }
+            }
+            this.obj.viewmodel = n;
+            switch (n) {
+                case 1:
+                    this.togglePreview(0);
+                    this.toggleSplitScreen(0);
+                    break;
+                case 2:
+                    this.togglePreview(0);
+                    this.toggleSplitScreen(1);
+                    break;
+                case 3:
+                    this.toggleSplitScreen(0);
+                    this.togglePreview(1);
+                    break;
             }
         },
         //根据命令获取工具条的对象
@@ -374,7 +383,7 @@
     netnrmd.fn.init.prototype = netnrmd.fn;
 
     //版本
-    netnrmd.version = "1.1.0";
+    netnrmd.version = "1.2.0";
 
     //命令
     netnrmd.cmd = function (cmdname, that) {
@@ -397,7 +406,8 @@
             txt: obj.textarea[0],
             before: '',
             defaultvalue: '',
-            after: ''
+            after: '',
+            isdo: true
         }
         switch (cmdname) {
             case "bold":
@@ -473,19 +483,19 @@
                 }
                 break;
             case "help":
+                ops.isdo = false;
                 window.open('https://netnr.gitee.io/markdownguide/', '_blank');
                 break;
             case "full":
+                ops.isdo = false;
                 $(txt).data('netnrmd').toggleFullScreen();
                 break;
-            case "preview":
-                $(txt).data('netnrmd').togglePreview();
-                break;
             case "split":
-                $(txt).data('netnrmd').toggleSplitScreen();
+                ops.isdo = false;
+                $(txt).data('netnrmd').toggleView();
                 break;
         }
-        netnrmd.insertxt(ops);
+        ops.isdo && netnrmd.insertxt(ops);
     };
 
     //默认值
@@ -595,8 +605,13 @@
             if (text.trim() == "") {
                 text = defaultvalue;
             }
+
+            var htop = document.documentElement.scrollTop;
+
             netnrmd.insertAfterText(txt, before + text + after);
             netnrmd.setSelectText(txt, pos, pos + text.length);
+
+            document.documentElement.scrollTop = htop;
 
             //编辑器内容变动回调
             var that = $(txt).data('netnrmd'), obj = that.obj;

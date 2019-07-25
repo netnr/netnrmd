@@ -24,14 +24,15 @@
 .netnrmd-toolbar {
     width: 100%;
     float: left;
-    border-bottom: 1px solid #ccc;
+    background-color: #f6f8fa;
+    border-radius: 3px 3px 0 0;
+    border-bottom: 1px solid #d1d5da;
 }
 /*工具条*/
 .netnrmd-menu {
     margin: 0;
     padding: 0 5px;
     list-style: none;
-    background-color: #FFF;
 }
 
     .netnrmd-menu li {
@@ -54,14 +55,11 @@
             line-height: 25px;
             text-align: center;
             text-decoration: none;
-            border: 3px solid #FFF;
             box-sizing: content-box;
         }
 
             .netnrmd-menu li span:hover, .netnrmd-menu li span.active {
-                color: green;
-                border-color: #f6f6f6;
-                background-color: #f6f6f6;
+                color: #4285f4;
             }
 
 /*编辑容器*/
