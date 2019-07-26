@@ -95,6 +95,11 @@
     box-sizing: border-box;
 }
 
+    /*编辑模式，限制图片最大高度，同步滚动效果更佳*/
+    .netnrmd-view img {
+        max-height: 160px;
+    }
+
 /*最大编辑*/
 .netnrmd-write-w100 {
     width: 100%;
