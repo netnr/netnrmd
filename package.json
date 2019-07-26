@@ -1,8 +1,8 @@
 {
   "name": "netnrmd",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Markdown Combinatorial editor | 组合编辑器",
-  "main": "src/netnrmd.min.js",
+  "main": "src/netnrmd.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -19,7 +19,7 @@
     "url": "https://github.com/netnr/netnrmd/issues"
   },
   "homepage": "https://github.com/netnr/netnrmd#readme",
-  "files":[
+  "files": [
     "src"
   ]
 }
