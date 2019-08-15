@@ -1,12 +1,12 @@
 ﻿/*                                                    *\
- *  netnrmd v1.2.0
- *  markdown语法解析基于remarkable，编辑与解析分离
- *  调用任意markdown解析器都能完美的运行
+ *  netnrmd v2.0.0
+ *  
+ *  netnrmd编辑器（Monaco Editor 编辑器 + Marked 解析 + highlight 代码高亮）
  *  
  *  Site：https://md.netnr.com
  *  GitHub：https://github.com/netnr/netnrmd
  *  Gitee：https://gitee.com/netnr/netnrmd
- *  Date：2019-07-25
+ *  Date：2019-08-15
  *  
  *  Author：netnr
  *                                                   */
@@ -19,29 +19,6 @@
         init: function (id, obj) {
             var that = this;
             obj = obj || {};
-
-            //默认解析器基于Remarkable
-            if (typeof obj.render != "function") {
-                //配置，具体参数参见官方文档
-                obj.html = netnrmd.dv(obj.html, false);
-                obj.xhtmlOut = netnrmd.dv(obj.xhtmlOut, false);
-                obj.langPrefix = netnrmd.dv(obj.langPrefix, 'language-');
-                obj.linkify = netnrmd.dv(obj.linkify, true);
-                obj.typographer = netnrmd.dv(obj.typographer, false);
-                obj.quotes = netnrmd.dv(obj.quotes, '“”‘’');
-                obj.highlight = netnrmd.dv(obj.highlight, function (str, lang) {
-                    if (window.hljs && hljs.getLanguage(lang)) {
-                        try {
-                            return hljs.highlight(lang, str).value;
-                        } catch (__) { }
-                    }
-                    try {
-                        return hljs.highlightAuto(str).value;
-                    } catch (__) { }
-                    return '';
-                });
-                this.md = new Remarkable(obj);
-            }
 
             //解析延迟毫秒
             obj.defer = netnrmd.dv(obj.defer, 500);
@@ -61,26 +38,18 @@
                         icon: 'italic',
                         key: 'I'
                     }, {
-                        title: '链接/link',
-                        icon: 'link',
-                        key: 'L'
-                    }, {
-                        title: '引用/blockquote',
-                        icon: 'quote-left',
-                        key: 'Q',
-                        cmd: 'quote'
+                        title: '删除/del',
+                        icon: 'strikethrough',
+                        key: 'D'
                     }, {
                         title: '标题/header',
                         icon: 'header',
                         key: 'H'
                     }, {
-                        title: '代码/code',
-                        icon: 'code',
-                        key: 'K'
-                    }, {
-                        title: '图片/image',
-                        icon: 'image',
-                        key: 'G'
+                        title: '引用/blockquote',
+                        icon: 'quote-left',
+                        key: 'Q',
+                        cmd: 'quote'
                     }, {
                         title: '有序列表/ol',
                         icon: 'list-ol',
@@ -90,9 +59,21 @@
                         icon: 'list-ul',
                         key: 'U'
                     }, {
+                        title: '链接/link',
+                        icon: 'link',
+                        key: 'L'
+                    }, {
+                        title: '图片/image',
+                        icon: 'image',
+                        key: 'G'
+                    }, {
                         title: '表格/table',
                         icon: 'table',
                         key: 'T'
+                    }, {
+                        title: '代码/code',
+                        icon: 'code',
+                        key: 'K'
                     }, {
                         title: '分隔线/line',
                         icon: 'minus',
@@ -116,35 +97,11 @@
                     }
                 ]);
 
-            //编写触发
-            obj.textarea = $(id).on('input', function () {
-                //编辑器内容变动回调
-                if (typeof obj.input == "function" && obj.input.call(that) == false) {
-                    return false;
-                }
-
-                //自动保存
-                if (obj.autosave) {
-                    that.setstore();
-                }
-
-                that.render();
-            }).keydown(function (e) {
-                e = e || window.event;
-                //按键支持
-                netnrmd.supperkey.call(this, e);
-            }).on('keyup paste cut mouseup scroll', function (e) {
-                //滚动条同步
-                netnrmd.syncscroll(this, 10);
-            });
+            //Monaco Editor容器
+            obj.mebox = $(id);
 
             //编辑器父容器
-            obj.container = obj.textarea.parent();
-
-            //渲染前回调
-            if (typeof obj.viewbefore == "function") {
-                obj.viewbefore.call(obj)
-            }
+            obj.container = obj.mebox.parent();
 
             //工具条
             var lis = [];
@@ -164,14 +121,60 @@
                 }
             }).end();
             //写
-            obj.write = $('<div class="netnrmd-write"></div>').append(obj.textarea);
+            obj.write = $('<div class="netnrmd-write"></div>').append(obj.mebox);
             //视图
             obj.view = $('<div class="netnrmd-body netnrmd-view"></div>');
             //编辑器
             obj.editor = $('<div class="netnrmd"></div>').append(obj.toolbar).append(obj.write).append(obj.view);
 
+            //渲染前回调
+            if (typeof obj.viewbefore == "function") {
+                obj.viewbefore.call(obj)
+            }
+
             //载入编辑器
             obj.container.append(obj.editor);
+
+            //Monaco Editor对象
+            obj.me = monaco.editor.create(obj.mebox[0], {
+                language: 'markdown',
+                scrollBeyondLastLine: false,
+                automaticLayout: true,
+                minimap: { enabled: false }
+            });
+
+            //编辑器内容变动回调
+            obj.me.onDidChangeModelContent(function () {
+                if (typeof obj.input == "function" && obj.input.call(that) == false) {
+                    return false;
+                }
+
+                //自动保存
+                if (obj.autosave) {
+                    that.setstore();
+                }
+
+                //渲染
+                that.render();
+            });
+
+            //滚动条同步
+            obj.me.onDidScrollChange(function (sc) {
+                var hratio = sc.scrollTop / (sc.scrollHeight - obj.mebox.height() - 4);
+                obj.view[0].scrollTop = (obj.view[0].scrollHeight - obj.view.height()) * hratio;
+            });
+
+            //按键事件监听
+            $.each(obj.items, function () {
+                var item = this;
+                if (item.key) {
+                    obj.me.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode["KEY_" + item.key], function () {
+                        var cmdname = item.cmd || item.icon;
+                        //执行命令
+                        netnrmd.cmd(cmdname, that);
+                    })
+                }
+            });
 
             this.obj = obj;
 
@@ -197,12 +200,12 @@
                 this.getstore();
             }
 
-            obj.textarea.data('netnrmd', this);
+            obj.mebox.data('netnrmd', this);
             return this;
         },
         //获取焦点
         focus: function () {
-            this.obj.textarea[0].focus();
+            this.obj.me.focus();
             return this;
         },
         //设置高度
@@ -212,7 +215,7 @@
                     !this.obj.fullscreen && (this.obj.height = height);
                     var weh = height - (this.obj.toolbar.is(':hidden') ? 0 : this.obj.toolbar.outerHeight());
                     this.obj.write.css('height', weh);
-                    this.obj.textarea.css('height', weh);
+                    this.obj.mebox.css('height', weh);
                     this.obj.view.css('height', weh);
                 }
                 return this;
@@ -307,12 +310,12 @@
         },
         //赋值md
         setmd: function (md) {
-            this.obj.textarea.val(md);
+            this.obj.me.setValue(md);
             return this;
         },
         //获取md
         getmd: function () {
-            return this.obj.textarea.val();
+            return this.obj.me.getValue();
         },
         //呈现html
         sethtml: function (html) {
@@ -341,7 +344,28 @@
                     if (typeof that.obj.render == "function") {
                         that.sethtml(that.obj.render(md));
                     } else {
-                        that.sethtml(that.md.render(md));
+                        that.sethtml(marked(md, {
+                            highlight: function (str, lang) {
+                                if (window.hljs && hljs.getLanguage(lang)) {
+                                    try {
+                                        return hljs.highlight(lang, str).value;
+                                    } catch (__) { }
+                                }
+                                try {
+                                    return hljs.highlightAuto(str).value;
+                                } catch (__) { }
+                                return '';
+                            },
+                            sanitize: true,
+                            sanitizer: function (html) {
+                                var temp = document.createElement("div");
+                                (temp.textContent != undefined) ? (temp.textContent = html) : (temp.innerText = html);
+                                var output = temp.innerHTML;
+                                temp = null;
+                                return output;
+                            },
+                            gfm: true
+                        }));
                     }
                 }
             }, that.obj.defer);
@@ -382,12 +406,10 @@
 
     netnrmd.fn.init.prototype = netnrmd.fn;
 
-    //版本
-    netnrmd.version = "1.2.0";
-
     //命令
     netnrmd.cmd = function (cmdname, that) {
-        var obj = that.obj, txt = obj.textarea[0];
+
+        var obj = that.obj, txt = obj.mebox[0];
 
         //允许响应命令
         if (obj.preview && "help,preview,split,full".indexOf(cmdname) == -1) {
@@ -402,8 +424,9 @@
         }
 
         var ops = {
+            me: obj.me,
             cmd: cmdname,
-            txt: obj.textarea[0],
+            txt: obj.mebox[0],
             before: '',
             defaultvalue: '',
             after: '',
@@ -411,31 +434,52 @@
         }
         switch (cmdname) {
             case "bold":
-                ops.before = ' **';
+                ops.before = '**';
                 ops.defaultvalue = '粗体';
-                ops.after = '** ';
+                ops.after = '**';
                 break;
             case "italic":
-                ops.before = ' _';
+                ops.before = '_';
                 ops.defaultvalue = '斜体';
-                ops.after = '_ ';
+                ops.after = '_';
+                break;
+            case "strikethrough":
+                ops.before = '~~';
+                ops.defaultvalue = '删除';
+                ops.after = '~~';
+                break;
+            case "header":
+                ops.defaultvalue = '标题';
+                ops.before = '### ';
+                break;
+            case "quote":
+                ops.before = '> ';
+                break;
+            case "list-ol":
+                ops.before = '1. ';
+                ops.defaultvalue = '列表文本';
+                break;
+            case "list-ul":
+                ops.before = '- ';
+                ops.defaultvalue = '列表文本';
                 break;
             case "link":
                 ops.before = '[链接说明](';
                 ops.defaultvalue = 'https://';
                 ops.after = ')';
                 break;
-            case "quote":
-                ops.before = '> ';
+            case "image":
+                ops.before = '![图片说明](';
+                ops.defaultvalue = 'https://';
+                ops.after = ')';
                 break;
-            case "header":
-                ops.defaultvalue = '标题';
-                ops.before = '### ';
+            case "table":
+                var cols = ' col 1 | col 2 | col 3 ', hd = ' ---- | ---- | ---- ', nl = '\r\n';
+                ops.before = cols + nl + hd + nl + cols + nl + cols + nl;
                 break;
             case "code":
                 {
-                    var tbs = txt.value.substring(0, netnrmd.getCursortPosition(txt)).split('\n');
-                    if (tbs[tbs.length - 1] == "") {
+                    if (obj.me.getSelection().startColumn == 1) {
                         ops.before = '```\n';
                         ops.after = '\n```';
                     } else {
@@ -445,42 +489,8 @@
                     ops.defaultvalue = '输入代码';
                 }
                 break;
-            case "image":
-                ops.before = '![图片说明](';
-                ops.defaultvalue = 'https://';
-                ops.after = ')';
-                break;
-            case "list-ol":
-                {
-                    var tbs = txt.value.substring(0, netnrmd.getCursortPosition(txt)).split('\n');
-                    if (tbs[tbs.length - 1] == "") {
-                        ops.before = '1. ';
-                    } else {
-                        ops.before = '\n1. ';
-                    }
-                    ops.defaultvalue = '列表文本';
-                }
-                break;
-            case "list-ul":
-                {
-                    var tbs = txt.value.substring(0, netnrmd.getCursortPosition(txt)).split('\n');
-                    if (tbs[tbs.length - 1] == "") {
-                        ops.before = '- ';
-                    } else {
-                        ops.before = '\n- ';
-                    }
-                    ops.defaultvalue = '列表文本';
-                }
-                break;
-            case "table":
-                var cols = ' col 1 | col 2 | col 3 ', hd = ' ---- | ---- | ---- ', nl = '\r\n';
-                ops.before = cols + nl + hd + nl + cols + nl + cols + nl;
-                break;
             case "line":
-                ops.before = '----------\r\n';
-                if (netnrmd.getCursortPosition(txt)) {
-                    ops.before = '\r\n\r\n' + ops.before;
-                }
+                ops.before = '---\r\n';
                 break;
             case "help":
                 ops.isdo = false;
@@ -503,115 +513,68 @@
         return (obj == null || obj == undefined) ? v : obj;
     }
 
-    // 获取光标位置
-    netnrmd.getCursortPosition = function (textDom) {
-        var cursorPos = 0;
-        if (document.selection) {
-            textDom.focus();
-            var selectRange = document.selection.createRange();
-            selectRange.moveStart('character', -textDom.value.length);
-            cursorPos = selectRange.text.length;
-        } else if (textDom.selectionStart || textDom.selectionStart == '0') {
-            cursorPos = textDom.selectionStart;
-        }
-        return cursorPos;
-    }
-
-    // 设置光标位置
-    netnrmd.setCaretPosition = function (textDom, pos) {
-        if (textDom.setSelectionRange) {
-            textDom.focus();
-            textDom.setSelectionRange(pos, pos);
-        } else if (textDom.createTextRange) {
-            var range = textDom.createTextRange();
-            range.collapse(true);
-            range.moveEnd('character', pos);
-            range.moveStart('character', pos);
-            range.select();
-        }
-    }
-
     // 获取选中文字
-    netnrmd.getSelectText = function (textDom) {
-        var userSelection = '';
-        if (textDom.selectionStart || textDom.selectionStart == '0') {
-            userSelection = textDom.value.substring(textDom.selectionStart, textDom.selectionEnd);
-        } else if (window.getSelection) {
-            userSelection = window.getSelection();
-        } else if (document.selection) {
-            userSelection = document.selection.createRange().text;
+    netnrmd.getSelectText = function (me) {
+        var gse = me.getSelection(), gm = me.getModel(), rows = [];
+        if (gse.startLineNumber == gse.endLineNumber) {
+            var row = gm.getLineContent(gse.startLineNumber);
+            row = row.substring(gse.startColumn - 1, gse.endColumn - 1);
+            rows.push(row)
+        } else {
+            for (var i = gse.startLineNumber; i <= gse.endLineNumber; i++) {
+                var row = gm.getLineContent(i);
+                if (i == gse.startLineNumber) {
+                    row = row.substring(gse.startColumn - 1);
+                }
+                if (i == gse.endLineNumber) {
+                    row = row.substring(0, gse.endColumn - 1);
+                }
+                rows.push(row);
+            }
         }
-        return userSelection;
+        return rows;
     }
 
     // 选中特定范围的文本
-    netnrmd.setSelectText = function (textDom, startPos, endPos) {
-        var startPos = parseInt(startPos), endPos = parseInt(endPos), textLength = textDom.value.length;
-        if (textLength) {
-            if (!startPos) {
-                startPos = 0;
-            }
-            if (!endPos) {
-                endPos = textLength;
-            }
-            if (startPos > textLength) {
-                startPos = textLength;
-            }
-            if (endPos > textLength) {
-                endPos = textLength;
-            }
-            if (textDom.createTextRange) {
-                var range = textDom.createTextRange();
-                range.moveStart("character", startPos);
-                range.moveEnd("character", endPos - startPos);
-                range.select();
-            } else {
-                textDom.setSelectionRange(startPos, endPos);
-                textDom.focus();
-            }
-        }
+    netnrmd.setSelectText = function (me, startRow, startPos, endRow, endPos) {
+        me.setSelection(new monaco.Selection(startRow, startPos, endRow, endPos));
+        me.focus();
     }
 
     // 在光标后插入文本
-    netnrmd.insertAfterText = function (textDom, value) {
-        var selectRange;
-        if (document.selection) {
-            textDom.focus();
-            selectRange = document.selection.createRange();
-            selectRange.text = value;
-            textDom.focus();
-        } else if (textDom.selectionStart || textDom.selectionStart == '0') {
-            var startPos = textDom.selectionStart;
-            var endPos = textDom.selectionEnd;
-            var scrollTop = textDom.scrollTop;
-            textDom.value = textDom.value.substring(0, startPos) + value + textDom.value.substring(endPos, textDom.value.length);
-            textDom.focus();
-            textDom.selectionStart = startPos + value.length;
-            textDom.selectionEnd = startPos + value.length;
-            textDom.scrollTop = scrollTop;
-        }
-        else {
-            textDom.value += value;
-            textDom.focus();
-        }
+    netnrmd.insertAfterText = function (me, text) {
+        var gse = me.getSelection();
+        var range = new monaco.Range(gse.startLineNumber, gse.startColumn, gse.endLineNumber, gse.endColumn);
+        var op = { identifier: { major: 1, minor: 1 }, range: range, text: text, forceMoveMarkers: true };
+        me.executeEdits("", [op]);
+        me.focus();
     }
 
     //插入内容
     netnrmd.insertxt = function (ops) {
         if (ops.cmd && ops.cmd != "") {
             var txt = ops.txt, before = ops.before, defaultvalue = ops.defaultvalue, after = ops.after;
-            var text = netnrmd.getSelectText(txt), pos = netnrmd.getCursortPosition(txt) + before.length;
-            //未选择内容
-            if (text.trim() == "") {
+            var gse = ops.me.getSelection();
+            var text = netnrmd.getSelectText(ops.me);
+            if (text.join('').trim() == "") {
                 text = defaultvalue;
+            } else {
+                text = text.join('\n');
             }
 
-            var htop = document.documentElement.scrollTop;
+            netnrmd.insertAfterText(ops.me, before + text + after);
 
-            netnrmd.insertAfterText(txt, before + text + after);
-            netnrmd.setSelectText(txt, pos, pos + text.length);
-
-            document.documentElement.scrollTop = htop;
+            var startPos = gse.startColumn + before.length,
+                endPos = startPos + text.length,
+                startLine = gse.startLineNumber,
+                addline = before.split('\n').length - 1;
+            //有换行时选择下一行
+            if (addline) {
+                startLine += addline;
+                startPos = 0;
+                endPos = 99;
+            }
+            netnrmd.setSelectText(ops.me, startLine, startPos, startLine, endPos);
 
             //编辑器内容变动回调
             var that = $(txt).data('netnrmd'), obj = that.obj;
@@ -622,51 +585,10 @@
         }
     }
 
-    //同步滚动条
-    netnrmd.syncscroll = function (txtDom, defer) {
-        clearTimeout(txtDom.syncdefer);
-        txtDom.syncdefer = setTimeout(function () {
-            var obj = $(txtDom).data('netnrmd').obj,
-                hratio = txtDom.scrollTop / (txtDom.scrollHeight - $(txtDom).height() - 4);
-            obj.view[0].scrollTop = (obj.view[0].scrollHeight - obj.view.height()) * hratio;
-        }, defer);
-    }
-
     //按键支持
     netnrmd.supperkey = function (e) {
         var key = e.keyCode || e.which || e.charCode;
-        if (key == 9) {
-            if (this.selectionStart || this.selectionStart == '0') {
-                e.preventDefault();
-                var start = this.selectionStart, end = this.selectionEnd,
-                    text = this.value, tab = '　　';
-                text = text.substr(0, start) + tab + text.substr(start);
-                this.value = text;
-                this.selectionStart = start + tab.length;
-                this.selectionEnd = end + tab.length;
-            }
-            else {
-                var code, sel, tmp, r;
-                sel = event.srcElement.document.selection.createRange();
-                r = event.srcElement.createTextRange();
-                event.returnValue = false;
-                if (sel.getClientRects().length > 1) {
-                    code = sel.text;
-                    tmp = sel.duplicate();
-                    tmp.moveToPoint(r.getBoundingClientRect().left, sel.getClientRects()[0].top);
-                    sel.setEndPoint("startToStart", tmp);
-                    sel.text = "　　" + sel.text.replace(/\r\n/g, "\r\t");
-                    code = code.replace(/\r\n/g, "\r\t");
-                    r.findText(code);
-                    r.select();
-                }
-                else {
-                    sel.text = "　　";
-                    sel.select();
-                }
-            }
-            $(this).data('netnrmd').render();
-        } else if (e.ctrlKey) {
+        if (e.ctrlKey) {
             var that = $(this).data('netnrmd'), obj = that.obj,
                 kv = String.fromCharCode(key).toUpperCase();
             if (kv != "") {

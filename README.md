@@ -1,54 +1,59 @@
 ﻿# netnrmd
 
-> Markdown Combinatorial editor | 组合编辑器
-
-> markdown 语法解析基于 `remarkable` ，编辑与解析分离
-
-> 调用任意 markdown 解析器都能完美的运行
+> netnrmd编辑器（Monaco Editor 编辑器 + Marked 解析 + highlight 代码高亮）
 
 > <https://md.netnr.com>
 
-## Install 安装
+### Install 安装
 
-```js
-//font-awesome （可以修改样式，用图片代替）
+```html
+<div>
+    <div id="editor"></div>
+</div>
+
+
+<!--netnrmd 样式-->
+<link href="netnrmd.css" rel="stylesheet" />
+
+<!--font-awesome-->
 <link href="https://lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
-//jquery
+<!--jquery-->
 <script src="https://lib.baomitu.com/jquery/1.12.4/jquery.min.js"></script>
 
-//remarkable 默认解析器（自定义render方法，可不引入）
-<script src="https://lib.baomitu.com/remarkable/1.7.1/remarkable.js"></script>
+<!--marked 解析器（自定义render方法，可不引入）-->
+<script src="https://lib.baomitu.com/marked/0.7.0/marked.min.js"></script>
 
-//netnrmd 样式
-<link href="netnrmd.css" rel="stylesheet" />
-//netnrmd
-<script src="netnrmd.min.js"></script>
+<!--Monaco Editor 加载器-->
+<script src="https://code.bdstatic.com/npm/monaco-editor@0.17.0/min/vs/loader.js"></script>
 
-//highlight 代码高亮（可选）
-<script src="https://lib.baomitu.com/highlight.js/9.12.0/highlight.min.js"></script>
+<!--highlight 代码高亮（可选）-->
+<script src="https://lib.baomitu.com/highlight.js/9.12.0/highlight.min.js" defer async></script>
+
+<!--构建-->
+<script>
+    require.config({
+        paths: { vs: "https://code.bdstatic.com/npm/monaco-editor@0.17.0/min/vs" },
+        'vs/nls': { availableLanguages: { '*': 'zh-cn' } }
+    });
+
+    require(['vs/editor/editor.main', '/netnrmd.js'], function () {
+        //初始化 netnrmd
+        window.nmd = new netnrmd('#editor');
+
+        //高度沉底
+        $(window).on('load resize', function () {
+            var vh = $(window).height() - nmd.obj.container.offset().top - 15;
+            nmd.height(Math.max(100, vh));
+        })
+    });
+</script>
 ```
-
-
-## Usage 使用
-
-```js
-var nmd = new netnrmd('#txt');
-console.log(nmd);
-console.log($('#txt').data('netnrmd'));
-
-//nmd.obj	参数
-//nmd.md	默认remarkable解析器对象
-```
-
-## Documentation 文档
-
-> [remarkable demo](https://jonschlinkert.github.io/remarkable/demo/)
 
 ### Options 选项
 
 ```js
-var nmd = new netnrmd('#txt', {
+var nmd = new netnrmd('#editor', {
 	//视图,1输入，2分屏，3预览，默认2
 	viewmodel: 2
 
@@ -67,7 +72,7 @@ var nmd = new netnrmd('#txt', {
 	//按键支持
     prefixkey: 'Ctrl+',
 
-    //解析器，默认使用remarkable，需要引入remarkable
+    //解析器，默认使用marked
     //指定解析方式，返回解析后的HTML
     render: function (md) {
         console.log(md)
@@ -134,16 +139,12 @@ var nmd = new netnrmd('#txt', {
         }
     }
 });
-
-//default remarkable parse，默认解析方式
-console.log(nmd.md.render('# netnrmd!'));
-// => <h1>netnrmd!</h1>
 ```
 
 ### Function 方法
 
 ```js
-var nmd = new netnrmd('#txt');
+var nmd = new netnrmd('#editor');
 console.log(nmd);
 
 //focus 焦点选中
@@ -194,47 +195,4 @@ nmd.setstore();
 
 //get store 获取本地保存
 nmd.getstore();
-
-//插入内容 重要，控制文本域的操作
-var ops = {
-	//不为空即可
-	cmd: cmdname,
-	//文本域对象
-    txt: nmd.obj.textarea[0],
-	//插入的内容前缀
-    before: '**',
-	//未选中内容时，默认内容，会选中
-    defaultvalue: '加粗',
-	//插入的内容后缀
-    after: '**'
-};
-netnrmd.insertxt(ops);
-//有选中内容XXX，输出：**XXX**
-//未选择内容，输出：**加粗**
-//before 到 after 之间的内容会选中
 ```
-### Textarea Extend 文本域拓展 
-
-```js
-var txtDom = $('#txt')[0];
-
-//获取光标位置
-netnrmd.getCursortPosition(txtDom);
-
-//设置光标位置
-netnrmd.getCursortPosition(txtDom, 3);
-
-//获取选中文字
-netnrmd.getSelectText(txtDom);
-
-//选中特定范围的文本
-netnrmd.setSelectText(txtDom, 1, 3);
-
-//在光标后插入文本
-netnrmd.insertAfterText(txtDom, "text");
-```
-
-## Authors 作者
-
-- [netnr](https://www.netnr.com) [github/netnr](https://github.com/netnr) 
-- Jon Schlinkert [github/jonschlinkert](https://github.com/jonschlinkert)
