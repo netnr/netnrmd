@@ -34,17 +34,17 @@
     </div>
 
     <script src="https://lib.baomitu.com/marked/0.7.0/marked.min.js"></script>
-    <script src="https://code.bdstatic.com/npm/monaco-editor@0.17.0/min/vs/loader.js"></script>
     <script src="https://lib.baomitu.com/jquery/3.3.1/jquery.slim.min.js"></script>
+    <script src="https://code.bdstatic.com/npm/monaco-editor@0.17.0/min/vs/loader.js"></script>
     <script src="https://lib.baomitu.com/highlight.js/9.12.0/highlight.min.js" defer async></script>
-
+    <script src="/src/netnrmd.js"></script>
     <script>
         require.config({
             paths: { vs: "https://code.bdstatic.com/npm/monaco-editor@0.17.0/min/vs" },
             'vs/nls': { availableLanguages: { '*': 'zh-cn' } }
         });
 
-        require(['vs/editor/editor.main', '/src/netnrmd.js'], function () {
+        require(['vs/editor/editor.main'], function () {
 
             window.nmd = new netnrmd('#editor');
 

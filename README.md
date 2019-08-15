@@ -30,6 +30,9 @@
 <!--highlight 代码高亮（可选）-->
 <script src="https://lib.baomitu.com/highlight.js/9.12.0/highlight.min.js" defer async></script>
 
+<!--netnrmd-->
+<script src="netnrmd.js"></script>
+
 <!--构建-->
 <script>
     require.config({
@@ -37,7 +40,7 @@
         'vs/nls': { availableLanguages: { '*': 'zh-cn' } }
     });
 
-    require(['vs/editor/editor.main', '/netnrmd.js'], function () {
+    require(['vs/editor/editor.main'], function () {
         //初始化 netnrmd
         window.nmd = new netnrmd('#editor');
 
