@@ -13,13 +13,11 @@
     <meta name="keywords" content="netnr,NET牛人,markdown,netnrmd" />
     <meta name="description" content="netnrmd 组合编辑器，Monaco Editor 编辑器 + Marked 解析 + highlight 代码高亮" />
 
-    <link href="src/netnrmd.css" rel="stylesheet" />
-    <link href="https://lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 </head>
 <body>
     <div>
         <center>
-            <h2>netnrmd</h2>
+            <h1>netnrmd</h1>
             <p>
                 <span>
                     &nbsp;<a href="https://github.com/netnr/netnrmd">GitHub</a>
@@ -37,7 +35,9 @@
     <script src="https://lib.baomitu.com/jquery/3.3.1/jquery.slim.min.js"></script>
     <script src="https://code.bdstatic.com/npm/monaco-editor@0.17.0/min/vs/loader.js"></script>
     <script src="https://lib.baomitu.com/highlight.js/9.12.0/highlight.min.js" defer async></script>
-    <script src="/src/netnrmd.js"></script>
+
+    <link href="src/netnrmd.css?2.1.0" rel="stylesheet" />
+    <script src="/src/netnrmd.js?2.1.0"></script>
     <script>
         require.config({
             paths: { vs: "https://code.bdstatic.com/npm/monaco-editor@0.17.0/min/vs" },
@@ -50,7 +50,7 @@
 
             //加载默认值
             var lsmd = localStorage.getItem("netnrmd_markdown");
-            if (!lsmd) {
+            if (!(lsmd || lsmd.trim() != "")) {
                 fetch('https://md.netnr.com/README.md').then(function (res) {
                     if (res.status == 200) {
                         res.text().then(function (md) {

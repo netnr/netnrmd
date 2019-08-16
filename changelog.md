@@ -1,6 +1,11 @@
 ﻿# 变更日志
 
 ----------
+### [v2.0.0] - 2019-08-16
+- 添加 表情包支持，https://github.com/netnr/emoji
+- 调整 去除 FontAwesome 依赖，集成SVG矢量图标到JS包
+- 调整 代码着色样式改为 VS 主题色
+
 ### [v2.0.0] - 2019-08-15
 - 改版：Monaco Editor 编辑器 + Marked 解析 + highlight 代码高亮
 

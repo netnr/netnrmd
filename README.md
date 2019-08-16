@@ -1,6 +1,6 @@
-﻿# netnrmd
+﻿# netnrmd编辑器
 
-> netnrmd编辑器（Monaco Editor 编辑器 + Marked 解析 + highlight 代码高亮）
+> Monaco Editor 编辑器 + Marked 解析 + highlight 代码高亮
 
 > <https://md.netnr.com>
 
@@ -10,13 +10,6 @@
 <div>
     <div id="editor"></div>
 </div>
-
-
-<!--netnrmd 样式-->
-<link href="netnrmd.css" rel="stylesheet" />
-
-<!--font-awesome-->
-<link href="https://lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
 <!--jquery-->
 <script src="https://lib.baomitu.com/jquery/1.12.4/jquery.min.js"></script>
@@ -31,6 +24,7 @@
 <script src="https://lib.baomitu.com/highlight.js/9.12.0/highlight.min.js" defer async></script>
 
 <!--netnrmd-->
+<link href="netnrmd.css" rel="stylesheet" />
 <script src="netnrmd.js"></script>
 
 <!--构建-->
@@ -70,8 +64,6 @@ var nmd = new netnrmd('#editor', {
 	//默认有变化自动保存
 	autosave: true,
 
-	//矢量图标前缀，font-awesome
-    prefixicon: 'fa fa-',
 	//按键支持
     prefixkey: 'Ctrl+',
 
@@ -87,17 +79,12 @@ var nmd = new netnrmd('#editor', {
         {
 			//title
             title: '表情',
-			//icon
-            icon: 'smile-o',
 			//keyboard
             key: 'E',
 			//cmd (default icon) 
-            cmd: 'emoji'
-        },
-        {
-            title: '粗体',
-            icon: 'bold',
-            key: 'B'
+            cmd: 'emoji',
+            //矢量图标，path标签 d特性值
+            svg: ''
         }
     ],
 
@@ -107,8 +94,7 @@ var nmd = new netnrmd('#editor', {
 		console.log(this);
 
         this.items.splice(0, 0, {
-            title: '表情/emoji',
-            icon: 'smile-o',
+            title: '表情',
             key: 'E',
             cmd: 'emoji'
         });
