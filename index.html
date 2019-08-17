@@ -36,8 +36,8 @@
     <script src="https://code.bdstatic.com/npm/monaco-editor@0.17.0/min/vs/loader.js"></script>
     <script src="https://lib.baomitu.com/highlight.js/9.12.0/highlight.min.js" defer async></script>
 
-    <link href="src/netnrmd.css?2.1.0" rel="stylesheet" />
-    <script src="/src/netnrmd.js?2.1.0"></script>
+    <link href="src/netnrmd.css?2.1.1" rel="stylesheet" />
+    <script src="/src/netnrmd.js?2.1.1"></script>
     <script>
         require.config({
             paths: { vs: "https://code.bdstatic.com/npm/monaco-editor@0.17.0/min/vs" },
@@ -46,11 +46,91 @@
 
         require(['vs/editor/editor.main'], function () {
 
-            window.nmd = new netnrmd('#editor');
+            window.nmd = new netnrmd('#editor', {
+
+                //添加一个上传按钮：添加按钮项及响应事件
+                //上传接口仅测试使用，如果接口失效请忽略，请换成其他上传接口
+
+                //渲染前回调，
+                viewbefore: function () {
+                    this.items.splice(14, 0, { title: '上传', cmd: 'upload', svg: "M1024 640.192C1024 782.912 919.872 896 787.648 896h-512C123.904 896 0 761.6 0 597.504 0 451.968 94.656 331.52 226.432 302.976 284.16 195.456 391.808 128 512 128c152.32 0 282.112 108.416 323.392 261.12C941.888 413.44 1024 519.04 1024 640.192z m-341.312-139.84L512 314.24 341.312 500.48h341.376z m-213.376 0v256h85.376v-256H469.312z" });
+                },
+                //命令回调
+                cmdcallback: function (cmd) {
+                    var that = this;
+                    if (cmd == "upload") {
+                        if (!that.uploadpopup) {
+                            //构建弹出内容
+                            var htm = [];
+                            htm.push('<div style="position:relative;height:100px;margin:15px;border:3px dashed #ddd;text-align:center;line-height:100px;">');
+                            htm.push('<input type="file" style="position:absolute;left:0;width:100%;height:100%;opacity:.5;" />');
+                            htm.push('<span>选择文件</span>');
+                            htm.push('</div>');
+
+                            //保存创建的上传弹出
+                            that.uploadpopup = netnrmd.popup("上传", htm.join(''));
+
+                            //选择文件上传，该上传接口仅为演示使用，仅支持图片格式的附件
+                            $(that.uploadpopup).find('input').change(function () {
+                                var file = this.files[0];
+                                if (file) {
+                                    if (file.size > 1024 * 1024 * 10) {
+                                        alert('文件过大')
+                                        this.value = "";
+                                        return;
+                                    }
+                                    if (file.type.indexOf('image') != 0) {
+                                        alert('仅支持图片')
+                                        this.value = "";
+                                        return;
+                                    }
+
+                                    var fd = new FormData();
+                                    fd.append('file', "multipart");
+                                    fd.append('Filedata', file);
+
+                                    //发起上传
+                                    var xhr = new XMLHttpRequest();
+                                    xhr.upload.onprogress = function (event) {
+                                        if (event.lengthComputable) {
+                                            //上传百分比
+                                            var per = (event.loaded / event.total) * 100;
+                                            per = per.toFixed(2) + " %";
+                                            console.log(per);
+                                        }
+                                    };
+
+                                    xhr.open("post", "//api.uomg.com/api/image.ali", true);
+                                    xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+                                    xhr.send(fd);
+                                    xhr.onreadystatechange = function (e) {
+                                        if (xhr.readyState == 4) {
+                                            if (xhr.status == 200) {
+                                                console.log(xhr.responseText)
+                                                var url = JSON.parse(xhr.responseText).imgurl;
+                                                if (url) {
+                                                    //上传成功，插入链接
+                                                    netnrmd.insertAfterText(that.obj.me, '[' + file.name + '](' + url + ')');
+                                                    $(that.uploadpopup).hide()
+                                                } else {
+                                                    alert('上传失败');
+                                                }
+                                            } else {
+                                                alert('上传失败');
+                                            }
+                                        }
+                                    }
+                                }
+                            })
+                        }
+                        $(that.uploadpopup).show().find('input').val('');
+                    }
+                }
+            });
 
             //加载默认值
             var lsmd = localStorage.getItem("netnrmd_markdown");
-            if (!(lsmd || lsmd.trim() != "")) {
+            if (!(lsmd && lsmd.trim() != "")) {
                 fetch('https://md.netnr.com/README.md').then(function (res) {
                     if (res.status == 200) {
                         res.text().then(function (md) {
@@ -60,6 +140,7 @@
                 })
             }
 
+            //高度沉底
             $(window).on('load resize', function () {
                 var vh = $(window).height() - nmd.obj.container.offset().top - 15;
                 nmd.height(Math.max(100, vh));

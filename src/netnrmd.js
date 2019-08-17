@@ -1,15 +1,14 @@
-﻿/*                                                    *\
- *  netnrmd v2.1.0
+﻿/*                                                         *\
+ *  netnrmd编辑器 v2.1.1
  *  
  *  Monaco Editor 编辑器 + Marked 解析 + highlight 代码高亮
  *  
- *  Site：https://md.netnr.com
- *  GitHub：https://github.com/netnr/netnrmd
- *  Gitee：https://gitee.com/netnr/netnrmd
- *  Date：2019-08-15
+ *  https://github.com/netnr/netnrmd
+ *  
+ *  Date：2019-08-17
  *  
  *  Author：netnr
- *                                                   */
+ *                                                        */
 
 (function (window) {
 
@@ -31,7 +30,7 @@
             obj.defer = netnrmd.dv(obj.defer, 500);
             //快捷键前缀
             obj.prefixkey = netnrmd.dv(obj.prefixkey, 'Ctrl+');
-            //工具栏
+            //工具栏，svg来源于阿里矢量图标，仅提取单个path的d属性
             obj.items = netnrmd.dv(obj.items,
                 [
                     { title: '表情', cmd: 'emoji', svg: "M512 1024A512 512 0 1 0 512 0a512 512 0 0 0 0 1024zM512 96a416 416 0 1 1 0 832 416 416 0 0 1 0-832zM256 320a64 64 0 1 1 128 0 64 64 0 0 1-128 0z m384 0a64 64 0 1 1 128 0 64 64 0 0 1-128 0z m64.128 307.264l82.304 49.408C730.496 769.728 628.544 832 512 832s-218.432-62.272-274.432-155.328l82.304-49.408C359.04 692.416 430.4 736 512 736s152.896-43.584 192.128-108.736z" },
@@ -54,13 +53,19 @@
                     { title: '分屏', cmd: 'splitscreen', float: 'right', svg: "M416 96v384H141.984l105.024-104.992L200.96 328.96l-160 160L19.008 512l21.984 23.008 160 160L247.04 648.96 141.984 544H416v384h64V96h-64z m128 0v832h64V544h274.016l-105.024 104.992 46.016 46.016 160-160 21.984-23.008-21.984-23.008-160-160-46.016 46.016L882.016 480H608V96h-64z" }
                 ]);
 
-            obj.previewhint = netnrmd.dv(obj.previewhint, "预览区域");
+            //预览提示文字
+            obj.ph = netnrmd.dv(obj.ph, "预览区域");
 
             //Monaco Editor容器
             obj.mebox = $(id);
 
             //编辑器父容器
             obj.container = obj.mebox.parent();
+
+            //渲染前回调
+            if (typeof obj.viewbefore == "function") {
+                obj.viewbefore.call(obj)
+            }
 
             //工具条
             var lis = [];
@@ -88,11 +93,6 @@
             obj.view = $('<div class="markdown-body netnrmd-view"></div>');
             //编辑器
             obj.editor = $('<div class="netnrmd"></div>').append(obj.toolbar).append(obj.write).append(obj.view);
-
-            //渲染前回调
-            if (typeof obj.viewbefore == "function") {
-                obj.viewbefore.call(obj)
-            }
 
             //载入编辑器
             obj.container.append(obj.editor);
@@ -289,7 +289,7 @@
         //清理md、html、本地缓存
         clear: function () {
             this.setmd('');
-            this.sethtml('<div class="netnrmd-view-empty">' + this.obj.previewhint + '</div>');
+            this.sethtml('<div class="netnrmd-view-empty">' + this.obj.ph + '</div>');
             this.setstore();
         },
         //渲染
@@ -305,6 +305,7 @@
                         that.sethtml(that.obj.render(md));
                     } else {
                         that.sethtml(marked(md, {
+                            headerIds: false,
                             highlight: function (str, lang) {
                                 if (window.hljs && hljs.getLanguage(lang)) {
                                     try {
@@ -369,27 +370,28 @@
     //命令
     netnrmd.cmd = function (cmdname, that) {
 
-        var obj = that.obj, txt = obj.mebox[0];
+        var obj = that.obj;
+
+        //执行命令前回调
+        if (typeof obj.cmdcallback == "function") {
+            if (obj.cmdcallback.call(that, cmdname) == false) {
+                return false;
+            }
+        }
 
         //允许响应命令
         if (obj.preview && "help,preview,splitscreen,fullscreen".indexOf(cmdname) == -1) {
             return false;
         }
 
-        //执行命令前回调
-        if (typeof obj.cmdcallback == "function") {
-            if (obj.cmdcallback.call(txt, cmdname) == false) {
-                return false;
-            }
-        }
-
         var ops = {
             me: obj.me,
             cmd: cmdname,
-            txt: obj.mebox[0],
+            txt: obj.mebox,
             before: '',
-            defaultvalue: '',
+            dv: '',
             after: '',
+            //执行公共插入
             isdo: true
         }
         switch (cmdname) {
@@ -416,21 +418,21 @@
                 break;
             case "bold":
                 ops.before = '**';
-                ops.defaultvalue = '粗体';
+                ops.dv = '粗体';
                 ops.after = '**';
                 break;
             case "italic":
                 ops.before = '_';
-                ops.defaultvalue = '斜体';
+                ops.dv = '斜体';
                 ops.after = '_';
                 break;
             case "strikethrough":
                 ops.before = '~~';
-                ops.defaultvalue = '删除';
+                ops.dv = '删除';
                 ops.after = '~~';
                 break;
             case "header":
-                ops.defaultvalue = '标题';
+                ops.dv = '标题';
                 ops.before = '### ';
                 break;
             case "quote":
@@ -438,33 +440,33 @@
                 break;
             case "list-ol":
                 ops.before = '1. ';
-                ops.defaultvalue = '列表文本';
+                ops.dv = '列表文本';
                 break;
             case "list-ul":
                 ops.before = '- ';
-                ops.defaultvalue = '列表文本';
+                ops.dv = '列表文本';
                 break;
             case "checked":
                 ops.before = '- [x] ';
-                ops.defaultvalue = '列表文本';
+                ops.dv = '列表文本';
                 break;
             case "unchecked":
                 ops.before = '- [ ] ';
-                ops.defaultvalue = '列表文本';
+                ops.dv = '列表文本';
                 break;
             case "link":
                 ops.before = '[链接说明](';
-                ops.defaultvalue = 'https://';
+                ops.dv = 'https://';
                 ops.after = ')';
                 break;
             case "image":
                 ops.before = '![图片说明](';
-                ops.defaultvalue = 'https://';
+                ops.dv = 'https://';
                 ops.after = ')';
                 break;
             case "table":
                 var cols = ' col 1 | col 2 | col 3 ', hd = ' ---- | ---- | ---- ', nl = '\r\n';
-                ops.before = cols + nl + hd + nl + cols + nl + cols + nl;
+                ops.before = cols + nl + hd + nl + cols + nl + cols + nl + nl;
                 break;
             case "code":
                 {
@@ -475,7 +477,7 @@
                         ops.before = '`';
                         ops.after = '`';
                     }
-                    ops.defaultvalue = '输入代码';
+                    ops.dv = '输入代码';
                 }
                 break;
             case "line":
@@ -487,11 +489,14 @@
                 break;
             case "fullscreen":
                 ops.isdo = false;
-                $(txt).data('netnrmd').toggleFullScreen();
+                obj.mebox.data('netnrmd').toggleFullScreen();
                 break;
             case "splitscreen":
                 ops.isdo = false;
-                $(txt).data('netnrmd').toggleView();
+                obj.mebox.data('netnrmd').toggleView();
+                break;
+            default:
+                ops.isdo = false;
                 break;
         }
         ops.isdo && netnrmd.insertxt(ops);
@@ -542,11 +547,11 @@
     //插入内容
     netnrmd.insertxt = function (ops) {
         if (ops.cmd && ops.cmd != "") {
-            var txt = ops.txt, before = ops.before, defaultvalue = ops.defaultvalue, after = ops.after;
+            var before = ops.before, dv = ops.dv, after = ops.after;
             var gse = ops.me.getSelection();
             var text = netnrmd.getSelectText(ops.me);
             if (text.join('').trim() == "") {
-                text = defaultvalue;
+                text = dv;
             } else {
                 text = text.join('\n');
             }
@@ -566,7 +571,7 @@
             netnrmd.setSelectText(ops.me, startLine, startPos, startLine, endPos);
 
             //编辑器内容变动回调
-            var that = $(txt).data('netnrmd'), obj = that.obj;
+            var that = ops.txt.data('netnrmd'), obj = that.obj;
             if (typeof obj.input == "function" && obj.input.call(that) == false) {
                 return false;
             }
