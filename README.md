@@ -14,18 +14,12 @@
 <!--jquery-->
 <script src="https://lib.baomitu.com/jquery/1.12.4/jquery.min.js"></script>
 
-<!--marked 解析器（自定义render方法，可不引入）-->
-<script src="https://lib.baomitu.com/marked/0.7.0/marked.min.js"></script>
-
 <!--Monaco Editor 加载器-->
 <script src="https://code.bdstatic.com/npm/monaco-editor@0.17.0/min/vs/loader.js"></script>
 
-<!--highlight 代码高亮（可选）-->
-<script src="https://lib.baomitu.com/highlight.js/9.12.0/highlight.min.js" defer async></script>
-
 <!--netnrmd-->
-<link href="netnrmd.css" rel="stylesheet" />
-<script src="netnrmd.js"></script>
+<link href="/src/netnrmd.css" rel="stylesheet" />
+<script src="/src/netnrmd.full.min.js"></script>
 
 <!--构建-->
 <script>
@@ -37,12 +31,6 @@
     require(['vs/editor/editor.main'], function () {
         //初始化 netnrmd
         window.nmd = new netnrmd('#editor');
-
-        //高度沉底
-        $(window).on('load resize', function () {
-            var vh = $(window).height() - nmd.obj.container.offset().top - 15;
-            nmd.height(Math.max(100, vh));
-        })
     });
 </script>
 ```
@@ -67,65 +55,22 @@ var nmd = new netnrmd('#editor', {
 	//按键支持
     prefixkey: 'Ctrl+',
 
-    //解析器，默认使用marked
-    //指定解析方式，返回解析后的HTML
-    render: function (md) {
-        console.log(md)
-        return md;
-    },
-
-    //自定义工具栏
-    items: [
-        {
-			//title
-            title: '表情',
-			//keyboard
-            key: 'E',
-			//cmd (default icon) 
-            cmd: 'emoji',
-            //矢量图标，path标签 d特性值
-            svg: ''
-        }
-    ],
-
-    //Before rendering the callback, add an expression Icon
-    //渲染前回调，添加一个表情图标
+    //Before rendering the callback
+    //渲染前回调
     viewbefore: function () {
 		console.log(this);
-
-        this.items.splice(0, 0, {
-            title: '表情',
-            key: 'E',
-            cmd: 'emoji'
-        });
     },
 
-    //Markdown editor changes when callback, custom parsing, add: emoji: parsing
-    //编辑器变动时回调，自定义解析，添加 :emoji: 解析
+    //Markdown editor changes when callback
+    //编辑器变动时回调
     input: function () {
-        //markdown to html
-		//获取markdown解析为html
-        var htm = this.md.render(this.getmd());
-
-        //:emoji:
-        //emojiParse自己实现
-        htm = emojiParse(htm);
-
-        //赋值视图
-        //set html
-        this.sethtml(htm);
-
-        //Prevent internal rendering		
-        //阻止内部渲染 
-        return false;
+        console.log(this);
     },
 
     //Trigger command callback
 	//触发命令回调
     cmdcallback: function (cmd) {
-        if (cmd == "emoji") {
-            $('#myModalEmoji').modal();
-        }
+        console.log(this);
     }
 });
 ```
