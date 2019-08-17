@@ -37,11 +37,12 @@
     .netnrmd-menu li {
         float: left;
         opacity: .5;
-        height: 18px;
+        height: 25px;
         margin: 3px 4px;
         cursor: pointer;
-        padding: 3px 4px;
+        padding: 3px;
         user-select: none;
+        box-sizing: border-box;
         border: 1px solid transparent;
     }
 
@@ -50,8 +51,9 @@
         }
 
         .netnrmd-menu li svg {
-            height: inherit;
+            height: 100%;
             text-align: center;
+            vertical-align: top;
             pointer-events: none;
             box-sizing: content-box;
         }
@@ -176,8 +178,9 @@
     margin: 2px;
     padding: 3px;
     cursor: pointer;
-    max-height: 32px;
+    max-height: 38px;
     border-radius: 50%;
+    box-sizing: border-box;
     border: 2px dashed transparent;
 }
 

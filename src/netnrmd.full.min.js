@@ -1,5 +1,5 @@
 ﻿/*                                                                          *\
- *  netnrmd编辑器 v2.2.0
+ *  netnrmd编辑器 v2.2.1
  *
  *  Monaco Editor 编辑器 + Marked 解析 + DOMPurify 清洗 + highlight 代码高亮
  *

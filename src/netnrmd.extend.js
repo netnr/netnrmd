@@ -39,9 +39,8 @@
                 if (!that.uploadpopup) {
                     //构建弹出内容
                     var htm = [];
-                    htm.push('<div style="position:relative;height:100px;margin:15px;border:3px dashed #ddd;text-align:center;line-height:100px;">');
-                    htm.push('<input type="file" style="position:absolute;left:0;width:100%;height:100%;opacity:.5;" />');
-                    htm.push('<span>选择文件</span>');
+                    htm.push('<div style="height:100px;margin:15px;border:3px dashed #ddd">');
+                    htm.push('<input type="file" style="width:100%;height:100%;" />');
                     htm.push('</div>');
 
                     //保存创建的上传弹出
