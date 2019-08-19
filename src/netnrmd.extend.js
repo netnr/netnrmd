@@ -1,8 +1,28 @@
-﻿//netnrmd 功能扩展
+﻿//NetnrMD编辑器 功能扩展
 
 (function (netnrmd) {
 
     netnrmd.extend = {
+        //关于
+        about: {
+            //按钮
+            button: { title: '关于', cmd: 'about', svg: "M616.282 34.31c64.875 3.514 114.594 58.488 111.047 122.79-3.546 64.297-59.015 113.572-123.891 110.058-64.879-3.513-114.595-58.49-111.049-122.79 3.547-64.3 59.014-113.574 123.893-110.058zM324.15 534.663s227.937-165.53 302.517-133.257c74.577 32.276-26.261 236.325-33.615 266.515-7.352 30.193-54.62 261.307 100.842 133.255 0 0 77.73-51.013-33.615 66.626-111.345 117.639-252.097 155.117-268.902 66.63-12.67-66.708 53.888-308.64 67.224-399.769 4.356-29.76-33.612 0-33.612 0S315.7 610.713 290.536 567.98c-4.007-6.807 22.947-27.69 33.614-33.317z" },
+            //动作
+            action: function (that) {
+                if (!that.aboutpopup) {
+                    //构建弹出内容
+                    var htm = [];
+                    htm.push("<h1><img src='/favicon.ico' style='height:40px;vertical-align:bottom' /> NetnrMD编辑器</h1>");
+                    htm.push("<p>jQuery + Monaco Editor 编辑器 + Marked 解析 + DOMPurify 清洗 + highlight 代码高亮</p>");
+                    htm.push("<p><a href='https://github.com/netnr/netnrmd'>https://github.com/netnr/netnrmd</a></p>");
+                    htm.push("<p><a href='https://gitee.com/netnr/netnrmd'>https://gitee.com/netnr/netnrmd</a></p>");
+                    htm.push("<p>&copy; 2019 <a href='https://www.netnr.com' target='_blank'>Netnr</a>, The <a href='https://github.com/netnr/netnrmd/blob/master/LICENSE' target='_blank'>MIT</a> License</p>");
+                    //弹出
+                    that.aboutpopup = netnrmd.popup("关于", htm.join(''));
+                }
+                $(that.aboutpopup).show();
+            }
+        },
         //表情
         emoji: {
             //按钮
@@ -23,7 +43,8 @@
                         var target = e.target || e.srcElement;
                         if (target.nodeName == "IMG") {
                             netnrmd.insertAfterText(that.obj.me, '![emoji](' + target.src + ' "' + target.title + '")\n');
-                            $(that.emojipopup).hide();
+
+                            $(this).hide();
                         }
                     })
                 }
@@ -101,7 +122,96 @@
                 }
                 $(that.uploadpopup).show().find('input').val('');
             }
+        },
+        //导出
+        import: {
+            //按钮
+            button: { title: '导出', cmd: 'import', svg: "M877.49 381.468H668.638V68.191H355.36v313.277H146.51l365.489 365.49 365.49-365.49zM146.51 851.383v104.425h730.98V851.383H146.51z" },
+            //动作
+            action: function (that) {
+                if (!that.importpopup) {
+                    //构建弹出内容
+                    var htm = [];
+                    htm.push("<div style='text-align:center;'>")
+                    "Markdown Html Word PDF Png".split(' ').map(function (x) {
+                        htm.push(' <button style="margin:10px;font-size:1.5rem;">' + x + '</button> ');
+                    });
+                    htm.push("</div>");
+                    //弹出
+                    that.importpopup = netnrmd.popup("导出", htm.join(''));
+                    $(that.importpopup).click(function (e) {
+                        e = e || window.event;
+                        var target = e.target || e.srcElement;
+                        if (target.nodeName == "BUTTON") {
+                            var bv = target.innerHTML.toLowerCase();
+                            switch (bv) {
+                                case "markdown":
+                                    netnrmd.down(that.getmd(), 'NetnrMd.md')
+                                    break;
+                                case "html":
+                                case "word":
+                                    fetch('https://www.netnr.com/template/htmltoword.html').then(x => x.text()).then(function (res) {
+                                        var htm = res.replace("@netnrmd@", that.gethtml());
+                                        var ext = bv == "word" ? "doc" : bv;
+                                        netnrmd.down(htm, 'NetnrMd.' + ext);
+                                    })
+                                    break;
+                                case "pdf":
+                                    require(['https://lib.baomitu.com/html2pdf.js/0.9.1/html2pdf.bundle.js'], function (module) {
+                                        var ch = that.obj.view.height();
+                                        that.obj.view.height('auto');
+                                        var vm = that.obj.viewmodel;
+                                        that.toggleView(3);
+                                        module(that.obj.view[0], {
+                                            margin: 3,
+                                            filename: 'NetnrMD.pdf',
+                                            html2canvas: { scale: 1.5 }
+                                        }).then(function () {
+                                            that.obj.view.height(ch);
+                                            that.toggleView(vm);
+                                        })
+                                    })
+                                    break;
+                                case "png":
+                                    require(['https://lib.baomitu.com/html2canvas/0.5.0-beta4/html2canvas.min.js'], function (module) {
+                                        var ch = that.obj.view.height();
+                                        that.obj.view.height('auto');
+                                        var vm = that.obj.viewmodel;
+                                        that.toggleView(3);
+                                        module(that.obj.view, {
+                                            scale: 1.5,
+                                            margin: 10,
+                                            onrendered: function (canvas) {
+                                                that.obj.view.height(ch);
+                                                that.toggleView(vm);
+                                                netnrmd.down(canvas, "NetnrMd.png");
+                                            }
+                                        })
+                                    })
+                                    break;
+                            }
+
+                            $(this).hide();
+                        }
+                    })
+                }
+                $(that.importpopup).show();
+            }
         }
+    }
+
+    netnrmd.down = function (content, file) {
+        var aTag = document.createElement('a');
+        aTag.download = file;
+        if (content.nodeType == 1) {
+            aTag.href = content.toDataURL();
+        } else {
+            var blob = new Blob([content]);
+            aTag.href = URL.createObjectURL(blob);
+        }
+        document.body.appendChild(aTag);
+        aTag.click();
+        aTag.remove();
     }
 
 })(netnrmd);

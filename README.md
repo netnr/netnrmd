@@ -1,6 +1,6 @@
-﻿# netnrmd编辑器
+﻿# NetnrMD编辑器
 
-> Monaco Editor 编辑器 + Marked 解析 + DOMPurify 清洗 + highlight 代码高亮
+> jQuery + Monaco Editor 编辑器 + Marked 解析 + DOMPurify 清洗 + highlight 代码高亮
 
 > <https://md.netnr.com>
 

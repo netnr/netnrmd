@@ -8,34 +8,22 @@
 
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 
-    <title>netnrmd</title>
+    <title>NetnrMD编辑器</title>
 
-    <meta name="keywords" content="netnr,NET牛人,markdown,netnrmd" />
-    <meta name="description" content="netnrmd 组合编辑器，Monaco Editor 编辑器 + Marked 解析 + DOMPurify 清洗 + highlight 代码高亮" />
+    <meta name="keywords" content="netnr,NET牛人,markdown,NetnrMD编辑器" />
+    <meta name="description" content="NetnrMD编辑器（jQuery + Monaco Editor 编辑器 + Marked 解析 + DOMPurify 清洗 + highlight 代码高亮）" />
 
 </head>
 <body>
     <div>
-        <center>
-            <h1>netnrmd</h1>
-            <p>
-                <span>
-                    &nbsp;<a href="https://github.com/netnr/netnrmd">GitHub</a>
-                    &nbsp;<a href="https://gitee.com/netnr/netnrmd">Gitee</a>
-                </span>
-                <small>netnrmd编辑器（Monaco Editor 编辑器 + Marked 解析 + DOMPurify 清洗 + highlight 代码高亮）</small>
-            </p>
-        </center>
-        <div>
-            <div id="editor"></div>
-        </div>
+        <div id="editor"></div>
     </div>
 
-    <script src="https://lib.baomitu.com/jquery/3.3.1/jquery.slim.min.js"></script>
+    <script src="https://lib.baomitu.com/jquery/3.3.1/jquery.min.js"></script>
 
-    <link href="src/netnrmd.css?2.2.1" rel="stylesheet" />
+    <link href="src/netnrmd.css?2.2.2" rel="stylesheet" />
     <script src="/src/netnrmd.full.min.js?2.2.1"></script>
-    <script src="/src/netnrmd.extend.js"></script>
+    <script src="/src/netnrmd.extend.js?2.2.2"></script>
     <script src="https://code.bdstatic.com/npm/monaco-editor@0.17.0/min/vs/loader.js"></script>
 
     <script>
@@ -52,13 +40,17 @@
                 //渲染前回调
                 viewbefore: function () {
                     this.items.splice(14, 0, netnrmd.extend.upload.button);
+                    this.items.splice(15, 0, netnrmd.extend.import.button);
+                    this.items.splice(17, 0, netnrmd.extend.about.button);
                     this.items.splice(0, 0, netnrmd.extend.emoji.button);
                 },
                 //命令回调
                 cmdcallback: function (cmd) {
                     switch (cmd) {
+                        case "about":
                         case "emoji":
                         case "upload":
+                        case "import":
                             netnrmd.extend[cmd].action(this)
                             break;
                     }
