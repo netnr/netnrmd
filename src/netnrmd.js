@@ -1,11 +1,11 @@
 ﻿/*                                                                          *\
- *  netnrmd编辑器 v2.2.1
+ *  netnrmd编辑器 v2.2.2
  *
  *  Monaco Editor 编辑器 + Marked 解析 + DOMPurify 清洗 + highlight 代码高亮
  *
  *  https://github.com/netnr/netnrmd
  *
- *  Date：2019-08-17
+ *  Date：2019-08-22
  *
  *  Author：netnr
  *                                                                          */
@@ -91,7 +91,6 @@
 
             //Monaco Editor对象
             obj.me = monaco.editor.create(obj.mebox[0], {
-                value: '',
                 language: 'markdown',
                 scrollBeyondLastLine: false,
                 automaticLayout: true,
@@ -294,20 +293,7 @@
                 if (md == "") {
                     that.clear();
                 } else {
-                    that.sethtml(DOMPurify.sanitize(marked(md, {
-                        headerIds: false,
-                        highlight: function (str, lang) {
-                            if (window.hljs && hljs.getLanguage(lang)) {
-                                try {
-                                    return hljs.highlight(lang, str).value;
-                                } catch (__) { }
-                            }
-                            try {
-                                return hljs.highlightAuto(str).value;
-                            } catch (__) { }
-                            return '';
-                        }
-                    })));
+                    that.sethtml(netnrmd.render(md));
                 }
             }, that.obj.defer);
         },
@@ -347,7 +333,11 @@
 
     netnrmd.fn.init.prototype = netnrmd.fn;
 
-    //命令
+    /**
+     * 命令
+     * @param {any} cmdname 命名名称
+     * @param {any} that netnrmd创建的对象
+     */
     netnrmd.cmd = function (cmdname, that) {
 
         var obj = that.obj;
@@ -458,54 +448,8 @@
                 ops.isdo = false;
                 break;
         }
-        ops.isdo && netnrmd.insertxt(ops);
-    };
 
-    //默认值
-    netnrmd.dv = function (obj, v) {
-        return (obj == null || obj == undefined) ? v : obj;
-    }
-
-    // 获取选中文字
-    netnrmd.getSelectText = function (me) {
-        var gse = me.getSelection(), gm = me.getModel(), rows = [];
-        if (gse.startLineNumber == gse.endLineNumber) {
-            var row = gm.getLineContent(gse.startLineNumber);
-            row = row.substring(gse.startColumn - 1, gse.endColumn - 1);
-            rows.push(row)
-        } else {
-            for (var i = gse.startLineNumber; i <= gse.endLineNumber; i++) {
-                var row = gm.getLineContent(i);
-                if (i == gse.startLineNumber) {
-                    row = row.substring(gse.startColumn - 1);
-                }
-                if (i == gse.endLineNumber) {
-                    row = row.substring(0, gse.endColumn - 1);
-                }
-                rows.push(row);
-            }
-        }
-        return rows;
-    }
-
-    // 选中特定范围的文本
-    netnrmd.setSelectText = function (me, startRow, startPos, endRow, endPos) {
-        me.setSelection(new monaco.Selection(startRow, startPos, endRow, endPos));
-        me.focus();
-    }
-
-    // 在光标后插入文本
-    netnrmd.insertAfterText = function (me, text) {
-        var gse = me.getSelection();
-        var range = new monaco.Range(gse.startLineNumber, gse.startColumn, gse.endLineNumber, gse.endColumn);
-        var op = { identifier: { major: 1, minor: 1 }, range: range, text: text, forceMoveMarkers: true };
-        me.executeEdits("", [op]);
-        me.focus();
-    }
-
-    //插入内容
-    netnrmd.insertxt = function (ops) {
-        if (ops.cmd && ops.cmd != "") {
+        if (ops.isdo && ops.cmd && ops.cmd != "") {
             var before = ops.before, dv = ops.dv, after = ops.after;
             var gse = ops.me.getSelection();
             var text = netnrmd.getSelectText(ops.me);
@@ -536,9 +480,94 @@
             }
             that.render();
         }
+    };
+
+    /**
+     * 默认值
+     * @param {any} obj 对象
+     * @param {any} v 默认值
+     */
+    netnrmd.dv = function (obj, v) {
+        return (obj == null || obj == undefined) ? v : obj;
     }
 
-    //弹窗
+    /**
+     * 解析Markdown
+     * @param {any} md
+     */
+    netnrmd.render = function (md) {
+        return DOMPurify.sanitize(marked(md, {
+            headerIds: false,
+            highlight: function (str, lang) {
+                if (window.hljs && hljs.getLanguage(lang)) {
+                    try {
+                        return hljs.highlight(lang, str).value;
+                    } catch (__) { }
+                }
+                try {
+                    return hljs.highlightAuto(str).value;
+                } catch (__) { }
+                return '';
+            }
+        }))
+    }
+
+    /**
+     * 获取选中文字
+     * @param {any} me Monaco Editor 对象
+     */
+    netnrmd.getSelectText = function (me) {
+        var gse = me.getSelection(), gm = me.getModel(), rows = [];
+        if (gse.startLineNumber == gse.endLineNumber) {
+            var row = gm.getLineContent(gse.startLineNumber);
+            row = row.substring(gse.startColumn - 1, gse.endColumn - 1);
+            rows.push(row)
+        } else {
+            for (var i = gse.startLineNumber; i <= gse.endLineNumber; i++) {
+                var row = gm.getLineContent(i);
+                if (i == gse.startLineNumber) {
+                    row = row.substring(gse.startColumn - 1);
+                }
+                if (i == gse.endLineNumber) {
+                    row = row.substring(0, gse.endColumn - 1);
+                }
+                rows.push(row);
+            }
+        }
+        return rows;
+    }
+
+    /**
+     * 选中特定范围的文本
+     * @param {any} me Monaco Editor 对象
+     * @param {any} startRow 开始行
+     * @param {any} startPos 开始列
+     * @param {any} endRow 结束行
+     * @param {any} endPos 结束列
+     */
+    netnrmd.setSelectText = function (me, startRow, startPos, endRow, endPos) {
+        me.setSelection(new monaco.Selection(startRow, startPos, endRow, endPos));
+        me.focus();
+    }
+
+    /**
+     * 在光标后插入文本
+     * @param {any} me Monaco Editor 对象
+     * @param {any} text 文本
+     */
+    netnrmd.insertAfterText = function (me, text) {
+        var gse = me.getSelection();
+        var range = new monaco.Range(gse.startLineNumber, gse.startColumn, gse.endLineNumber, gse.endColumn);
+        var op = { identifier: { major: 1, minor: 1 }, range: range, text: text, forceMoveMarkers: true };
+        me.executeEdits("", [op]);
+        me.focus();
+    }
+
+    /**
+     * 弹窗
+     * @param {any} title 标题
+     * @param {any} content 内容主体
+     */
     netnrmd.popup = function (title, content) {
         var pp = document.createElement("div");
 
