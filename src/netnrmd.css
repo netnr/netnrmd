@@ -17,6 +17,7 @@
     width: 100%;
     height: 100%;
     z-index: 6666;
+    border-radius: 0;
     background-color: #fff;
     border-color: transparent;
 }
