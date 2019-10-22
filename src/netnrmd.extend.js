@@ -146,14 +146,14 @@
                             var bv = target.innerHTML.toLowerCase();
                             switch (bv) {
                                 case "markdown":
-                                    netnrmd.down(that.getmd(), 'NetnrMd.md')
+                                    netnrmd.down(that.getmd(), 'NetnrMD.md')
                                     break;
                                 case "html":
                                 case "word":
                                     fetch('https://www.netnr.com/template/htmltoword.html').then(x => x.text()).then(function (res) {
                                         var htm = res.replace("@netnrmd@", that.gethtml());
                                         var ext = bv == "word" ? "doc" : bv;
-                                        netnrmd.down(htm, 'NetnrMd.' + ext);
+                                        netnrmd.down(htm, 'NetnrMD.' + ext);
                                     })
                                     break;
                                 case "pdf":
@@ -184,7 +184,7 @@
                                             onrendered: function (canvas) {
                                                 that.obj.view.height(ch);
                                                 that.toggleView(vm);
-                                                netnrmd.down(canvas, "NetnrMd.png");
+                                                netnrmd.down(canvas, "NetnrMD.png");
                                             }
                                         })
                                     })

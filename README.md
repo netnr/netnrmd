@@ -12,19 +12,19 @@
 </div>
 
 <!--jquery-->
-<script src="https://lib.baomitu.com/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://code.bdstatic.com/npm/jquery@3.4.1/dist/jquery.min.js"></script>
 
 <!--Monaco Editor 加载器-->
-<script src="https://code.bdstatic.com/npm/monaco-editor@0.17.0/min/vs/loader.js"></script>
+<script src="https://code.bdstatic.com/npm/monaco-editor@0.18.1/min/vs/loader.js"></script>
 
 <!--netnrmd-->
 <link href="/src/netnrmd.css" rel="stylesheet" />
-<script src="/src/netnrmd.full.min.js"></script>
+<script src="/src/netnrmd.bundle.min.js"></script>
 
 <!--构建-->
 <script>
     require.config({
-        paths: { vs: "https://code.bdstatic.com/npm/monaco-editor@0.17.0/min/vs" },
+        paths: { vs: "https://code.bdstatic.com/npm/monaco-editor@0.18.1/min/vs" },
         'vs/nls': { availableLanguages: { '*': 'zh-cn' } }
     });
 
