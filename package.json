@@ -1,8 +1,8 @@
 {
   "name": "netnrmd",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "Markdown Combinatorial editor | 组合编辑器，Monaco Editor 编辑器 + Marked 解析 + DOMPurify 清洗 + highlight 代码高亮",
-  "main": "src/netnrmd.full.min.js",
+  "main": "src/netnrmd.bundle.min.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
