@@ -1,11 +1,11 @@
 ﻿/*                                                                          *\
- *  netnrmd编辑器 v2.2.2
+ *  netnrmd编辑器 v2.2.3
  *
  *  Monaco Editor 编辑器 + Marked 解析 + DOMPurify 清洗 + highlight 代码高亮
  *
  *  https://github.com/netnr/netnrmd
  *
- *  Date：2019-08-22
+ *  Date：2019-11-20
  *
  *  Author：netnr
  *                                                                          */
@@ -94,6 +94,7 @@
                 language: 'markdown',
                 scrollBeyondLastLine: false,
                 automaticLayout: true,
+                wordWrap: "on",
                 minimap: { enabled: false }
             });
 
