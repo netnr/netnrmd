@@ -83,8 +83,11 @@
                             }
 
                             var fd = new FormData();
-                            fd.append('file', "multipart");
-                            fd.append('Filedata', file);
+                            fd.append('file', file);
+                            fd.append('title', "netnr-bed");
+                            fd.append('desc', "This picture is uploaded from netnr");
+                            fd.append('cat', "netnr-category");
+                            fd.append('group', "netnr-group");
 
                             //发起上传
                             var xhr = new XMLHttpRequest();
@@ -97,14 +100,19 @@
                                 }
                             };
 
-                            xhr.open("post", "//api.uomg.com/api/image.ali", true);
-                            xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+                            xhr.open("post", "https://uploadbeta.com/api/pictures/upload/file/", true);
                             xhr.send(fd);
                             xhr.onreadystatechange = function () {
                                 if (xhr.readyState == 4) {
                                     if (xhr.status == 200) {
                                         console.log(xhr.responseText)
-                                        var url = JSON.parse(xhr.responseText).imgurl;
+                                        var res = JSON.parse(xhr.responseText), url;
+                                        if (res.img) {
+                                            url = res.img
+                                        }
+                                        else if (res.error.length < 15 && res.error.indexOf('-') >= 0) {
+                                            url = "https://uploadbeta.com/share-image/" + res.error.split('-')[1];
+                                        }
                                         if (url) {
                                             //上传成功，插入链接
                                             netnrmd.insertAfterText(that.obj.me, '[' + file.name + '](' + url + ')');
