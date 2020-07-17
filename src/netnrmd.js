@@ -1,11 +1,11 @@
 ﻿/*                                                                          *\
- *  netnrmd编辑器 v2.4.0
+ *  netnrmd编辑器 v2.4.1
  *
  *  Monaco Editor 编辑器 + Marked 解析 + DOMPurify 清洗 + highlight 代码高亮
  *
  *  https://github.com/netnr/netnrmd
  *
- *  Date：2020-07-17
+ *  Date：2020-07-18
  *
  *  Author：netnr
  *                                                                          */
@@ -211,7 +211,9 @@
                 obj.write.removeClass('netnrmd-write-w100');
                 obj.view.removeClass('netnrmd-view-hidden');
             }
-            obj.me.layout();
+            setTimeout(function () {
+                obj.me.layout()
+            }, 1)
         },
         //预览切换
         togglePreview: function (preview) {
@@ -228,7 +230,9 @@
                 obj.write.removeClass('netnrmd-write-hidden');
                 obj.view.removeClass('netnrmd-view-w100');
             }
-            obj.me.layout();
+            setTimeout(function () {
+                obj.me.layout()
+            }, 1)
         },
         //视图切换
         toggleView: function (n) {
