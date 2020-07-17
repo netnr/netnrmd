@@ -1,14 +1,15 @@
 ﻿# NetnrMD编辑器
-
-> jQuery + Monaco Editor 编辑器 + Marked 解析 + DOMPurify 清洗 + highlight 代码高亮
+jQuery + Monaco Editor 编辑器 + Marked 解析 + DOMPurify 清洗 + highlight 代码高亮
 
 > <https://md.netnr.com>
+
+### [变更日志](changelog.md)
 
 ### Install 安装
 
 ```html
 <div>
-    <div id="editor"></div>
+    <div id="editor">Loading ...</div>
 </div>
 
 <!--jquery-->
@@ -41,6 +42,9 @@
 var nmd = new netnrmd('#editor', {
 	//视图,1输入，2分屏，3预览，默认2
 	viewmodel: 2
+
+    //编辑器字体大小
+    fontsize: 16,
 
 	//高度
     height: 300,

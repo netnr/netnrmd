@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="zh-cn">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
@@ -10,25 +10,28 @@
 
     <title>NetnrMD编辑器</title>
 
-    <meta name="keywords" content="netnr,NET牛人,markdown,NetnrMD编辑器" />
+    <meta name="keywords" content="netnr,NET牛人,markdown,NetnrMD,NetnrMD编辑器" />
     <meta name="description" content="NetnrMD编辑器（jQuery + Monaco Editor 编辑器 + Marked 解析 + DOMPurify 清洗 + highlight 代码高亮）" />
 
 </head>
 <body>
     <div>
-        <div id="editor"></div>
+        <div id="editor">Loading ...</div>
     </div>
 
     <script src="https://code.bdstatic.com/npm/jquery@3.5.0/dist/jquery.min.js"></script>
 
-    <link href="src/netnrmd.css?2.2.2" rel="stylesheet" />
-    <script src="/src/netnrmd.bundle.min.js?2.2.3"></script>
-    <script src="/src/netnrmd.extend.js?2.2.4"></script>
+    <link href="src/netnrmd.css" rel="stylesheet" />
+    <script src="/src/netnrmd.bundle.min.js"></script>
+    <script src="/src/netnrmd.extend.js"></script>
+
     <script src="https://code.bdstatic.com/npm/monaco-editor@0.20.0/min/vs/loader.js"></script>
 
     <script>
         require.config({
-            paths: { vs: "https://code.bdstatic.com/npm/monaco-editor@0.20.0/min/vs" },
+            paths: {
+                vs: "https://code.bdstatic.com/npm/monaco-editor@0.20.0/min/vs"
+            },
             'vs/nls': { availableLanguages: { '*': 'zh-cn' } }
         });
 
@@ -60,12 +63,8 @@
             //加载默认值
             var lsmd = localStorage.getItem("netnrmd_markdown");
             if (!(lsmd && lsmd.trim() != "")) {
-                fetch('https://md.netnr.com/README.md').then(function (res) {
-                    if (res.status == 200) {
-                        res.text().then(function (md) {
-                            nmd.setmd(md);
-                        })
-                    }
+                $.get('README.md', null, function (res) {
+                    nmd.setmd(res);
                 })
             }
 

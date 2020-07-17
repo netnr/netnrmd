@@ -14,7 +14,7 @@
 </head>
 <body>
     <div>
-        <div id="editor"></div>
+        <div id="editor">Loading ...</div>
     </div>
 
     <script src="https://code.bdstatic.com/npm/jquery@3.5.0/dist/jquery.min.js"></script>
@@ -26,7 +26,7 @@
 
     <script>
         require.config({
-            paths: { vs: "https://code.bdstatic.com/npm/monaco-editor@0.19.2/min/vs" },
+            paths: { vs: "https://code.bdstatic.com/npm/monaco-editor@0.20.0/min/vs" },
             'vs/nls': { availableLanguages: { '*': 'zh-cn' } }
         });
         require(['vs/editor/editor.main'], function () {
