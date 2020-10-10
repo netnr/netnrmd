@@ -1,5 +1,5 @@
 ﻿/*                                                                          *\
- *  netnrmd编辑器 v2.4.1
+ *  netnrmd编辑器 v2.5.0
  *
  *  Monaco Editor 编辑器 + Marked 解析 + DOMPurify 清洗 + highlight 代码高亮
  *
@@ -102,6 +102,7 @@
 
             //编辑器内容变动回调
             obj.me.onDidChangeModelContent(function () {
+
                 if (typeof obj.input == "function" && obj.input.call(that) == false) {
                     return false;
                 }
@@ -287,12 +288,6 @@
         gethtml: function () {
             return this.obj.view.html();
         },
-        //清理md、html、本地缓存
-        clear: function () {
-            this.setmd('');
-            this.sethtml('<div class="netnrmd-view-empty">' + this.obj.ph + '</div>');
-            this.setstore();
-        },
         //渲染
         render: function () {
             var that = this;
@@ -300,7 +295,9 @@
             that.obj.deferIndex = setTimeout(function () {
                 var md = that.getmd();
                 if (md == "") {
-                    that.clear();
+                    //清理html、本地缓存
+                    that.sethtml('<div class="netnrmd-view-empty">' + that.obj.ph + '</div>');
+                    that.setstore();
                 } else {
                     that.sethtml(netnrmd.render(md));
                 }

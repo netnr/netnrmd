@@ -9,30 +9,40 @@ jQuery + Monaco Editor 编辑器 + Marked 解析 + DOMPurify 清洗 + highlight 
 
 ### Install 安装
 
+<https://www.jsdelivr.com/package/npm/netnrmd>
+
 ```html
 <div>
     <div id="editor">Loading ...</div>
 </div>
 
-<!--jquery-->
-<script src="https://code.bdstatic.com/npm/jquery@3.5.0/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.21.2/min/vs/loader.js"></script>
 
-<!--Monaco Editor 加载器-->
-<script src="https://code.bdstatic.com/npm/monaco-editor@0.20.0/min/vs/loader.js"></script>
+<link href="src/netnrmd.css" rel="stylesheet" />
+<script src="src/netnrmd.js"></script>
+<script src="src/netnrmd.extend.js"></script>
 
-<!--netnrmd-->
-<link href="/src/netnrmd.css" rel="stylesheet" />
-<script src="/src/netnrmd.bundle.min.js"></script>
-
-<!--构建-->
 <script>
     require.config({
-        paths: { vs: "https://code.bdstatic.com/npm/monaco-editor@0.20.0/min/vs" },
-        'vs/nls': { availableLanguages: { '*': 'zh-cn' } }
+        paths: {
+            vs: "https://cdn.jsdelivr.net/npm/monaco-editor@0.21.2/min/vs"
+        },
+        'vs/nls': { availableLanguages: { '*': 'zh-cn' } },
+        mdrely: [
+            'https://cdn.jsdelivr.net/npm/marked@1.2.0/lib/marked.min',
+            'https://cdn.jsdelivr.net/npm/dompurify@2.1.1/dist/purify.min',
+            'https://cdn.jsdelivr.net/npm/highlight.js@9.18.3/lib/highlight.min',
+            'vs/editor/editor.main'
+        ]
     });
 
-    require(['vs/editor/editor.main'], function () {
-        //初始化 netnrmd
+    require(require.getConfig().mdrely, function (m, p, h) {
+        window.marked = m;
+        window.DOMPurify = p;
+        window.hljs = h;
+
+        //初始化
         window.nmd = new netnrmd('#editor');
     });
 </script>
@@ -113,9 +123,6 @@ nmd.sethtml(html);
 
 //get html 取值
 nmd.gethtml();
-
-//clear markdown&html 清空
-nmd.clear();
 
 //render 渲染
 nmd.render();

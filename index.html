@@ -19,28 +19,35 @@
         <div id="editor">Loading ...</div>
     </div>
 
-    <script src="https://code.bdstatic.com/npm/jquery@3.5.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.21.2/min/vs/loader.js"></script>
 
     <link href="src/netnrmd.css" rel="stylesheet" />
-    <!--<script src="/src/netnrmd.rely.js"></script>-->
-    <!--<script src="/src/netnrmd.js"></script>-->
-    <script src="/src/netnrmd.bundle.min.js"></script>
-    <script src="/src/netnrmd.extend.js"></script>
-
-    <script src="https://code.bdstatic.com/npm/monaco-editor@0.20.0/min/vs/loader.js"></script>
+    <script src="src/netnrmd.js?20201010"></script>
+    <script src="src/netnrmd.extend.js?20201010"></script>
 
     <script>
         require.config({
             paths: {
-                vs: "https://code.bdstatic.com/npm/monaco-editor@0.20.0/min/vs"
+                vs: "https://cdn.jsdelivr.net/npm/monaco-editor@0.21.2/min/vs"
             },
-            'vs/nls': { availableLanguages: { '*': 'zh-cn' } }
+            'vs/nls': { availableLanguages: { '*': 'zh-cn' } },
+            mdrely: [
+                'https://cdn.jsdelivr.net/npm/marked@1.2.0/lib/marked.min',
+                'https://cdn.jsdelivr.net/npm/dompurify@2.1.1/dist/purify.min',
+                'https://cdn.jsdelivr.net/npm/highlight.js@9.18.3/lib/highlight.min',
+                'vs/editor/editor.main'
+            ]
         });
 
-        require(['vs/editor/editor.main'], function () {
+        require(require.getConfig().mdrely, function (m, p, h) {
+            window.marked = m;
+            window.DOMPurify = p;
+            window.hljs = h;
 
+            //初始化
             window.nmd = new netnrmd('#editor', {
-                //加载扩展功能
+                //加载扩展功能（可选）
 
                 //渲染前回调
                 viewbefore: function () {
@@ -65,7 +72,7 @@
             //加载默认值
             var lsmd = localStorage.getItem("netnrmd_markdown");
             if (!(lsmd && lsmd.trim() != "")) {
-                $.get('README.md', null, function (res) {
+                $.get('README_zh-CN.md', null, function (res) {
                     nmd.setmd(res);
                 })
             }
