@@ -20,30 +20,21 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.21.2/min/vs/loader.js"></script>
 
     <link href="src/netnrmd.css" rel="stylesheet" />
-    <script src="src/netnrmd.js?20201010"></script>
+    <script src="src/netnrmd.bundle.js?20201125"></script>
     <script src="src/netnrmd.extend.js?20201010"></script>
+    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.21.2/min/vs/loader.js"></script>
 
     <script>
         require.config({
             paths: {
-                vs: "https://cdn.jsdelivr.net/npm/monaco-editor@0.21.2/min/vs"
+                vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.21.2/min/vs'
             },
-            'vs/nls': { availableLanguages: { '*': 'zh-cn' } },
-            mdrely: [
-                'https://cdn.jsdelivr.net/npm/marked@1.2.0/lib/marked.min',
-                'https://cdn.jsdelivr.net/npm/dompurify@2.1.1/dist/purify.min',
-                'https://cdn.jsdelivr.net/npm/highlight.js@9.18.3/lib/highlight.min',
-                'vs/editor/editor.main'
-            ]
+            'vs/nls': { availableLanguages: { '*': 'zh-cn' } }
         });
 
-        require(require.getConfig().mdrely, function (m, p, h) {
-            window.marked = m;
-            window.DOMPurify = p;
-            window.hljs = h;
+        require(['vs/editor/editor.main'], function () {
 
             //初始化
             window.nmd = new netnrmd('#editor', {

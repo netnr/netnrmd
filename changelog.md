@@ -1,8 +1,7 @@
 ﻿# Change log
 
-### [v3.0.0] - 2020-10-10
-- Adjust the introduction of dependencies, from the bundle to the introduction of a single component to facilitate version upgrades
-- Fix loop rendering when empty content
+### [v2.6.0] - 2020-11-25
+- Update component dependent version: marked@1.2.5, dompurify@2.2.2, highlight.js@10.4.0
 
 ### [v2.4.1] - 2020-07-18
 - Fix `Monaco Editor v0.20.0` adaptive size not responding (delay adaptive)

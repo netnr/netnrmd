@@ -506,7 +506,7 @@
                         return hljs.getLanguage(lang)
                             ? hljs.highlight(lang, str).value
                             : hljs.highlightAuto(str).value;
-                    } catch (__) { }
+                    } catch (__) { console.log(__) }
                 }
                 return str;
             }

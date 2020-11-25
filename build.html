@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh-cn" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>打包</title>
+    <script src="https://cdn.jsdelivr.net/npm/terser@5.3.8/dist/bundle.min.js"></script>
+</head>
+<body>
+    <script>
+        var bd = {
+            bundle: [
+                {
+                    src: "/src/netnrmd.js",
+                    comment: "netnrmd v2.5.0 | MIT | Minified by Terser",
+                    compression: true
+                },
+                {
+                    src: "https://cdn.jsdelivr.net/npm/marked@1.2.5/lib/marked.min.js"
+                },
+                {
+                    src: "https://cdn.jsdelivr.net/npm/dompurify@2.2.2/dist/purify.min.js"
+                },
+                {
+                    src: "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.4.0/build/highlight.js",
+                    comment: "Highlight.js 10.4.0 | BSD-3-Clause | Minified by Terser",
+                    compression: true
+                }
+            ],
+
+            handle: function (bi) {
+                return new Promise(function (resolve, reject) {
+                    fetch(bi.src).then(x => x.text()).then(res => {
+                        if (bi.compression) {
+                            bi.text = res;
+                            Terser.minify(res).then(result => {
+                                bi.txt = result.code;
+                                resolve();
+                            }).catch(e => {
+                                bi.txt = e + "";
+                            })
+                        } else {
+                            bi.txt = res;
+                            resolve();
+                        }
+                    })
+                });
+            },
+
+            run: function () {
+                var phs = [];
+                bd.bundle.forEach(bi => {
+                    phs.push(bd.handle(bi))
+                });
+                Promise.all(phs).then(res => {
+                    console.log(bd.bundle);
+
+                    var code = [];
+                    bd.bundle.forEach(bi => {
+                        if (bi.comment) {
+                            code.push("/*! " + bi.comment + " */");
+                        }
+                        code.push(bi.txt);
+                        code.push("");
+                    });
+
+                    var aTag = document.createElement('a');
+                    var blob = new Blob([code.join('\r\n')]);
+                    aTag.download = "netnrmd.bundle.js";
+                    aTag.href = URL.createObjectURL(blob);
+                    document.body.appendChild(aTag);
+                    aTag.click();
+                    URL.revokeObjectURL(blob);
+                });
+            }
+        };
+
+        bd.run();
+    </script>
+</body>
+</html>
