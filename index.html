@@ -73,6 +73,24 @@
                 var vh = $(window).height() - nmd.obj.container.offset().top - 10;
                 nmd.height(Math.max(100, vh));
             })
+
+            //拖拽
+            $(document).on("dragleave dragenter dragover", function (e) {
+                if (e && e.stopPropagation) { e.stopPropagation() } else { window.event.cancelBubble = true }
+                if (e && e.preventDefault) { e.preventDefault() } else { window.event.returnValue = false }
+            }).on("drop", function (e) {
+                if (e && e.preventDefault) { e.preventDefault() } else { window.event.returnValue = false }
+                e = e || window.event;
+                var files = (e.dataTransfer || e.originalEvent.dataTransfer).files;
+                if (files && files.length) {
+                    var file = files[0];
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        nmd.setmd(e.target.result);
+                    };
+                    reader.readAsText(file);
+                }
+            });
         });
     </script>
 </body>
