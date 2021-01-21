@@ -1,5 +1,9 @@
 ﻿# Change log
 
+### [v2.6.1] - 2021-01-22
+- Update component dependent version： marked@1.2.7, dompurify@2.2.6, highlight.js@10.5.0
+- Fixed the issue of freezing in certain situations when only the view is displayed
+
 ### [v2.6.0] - 2020-11-25
 - Update component dependent version: marked@1.2.5, dompurify@2.2.2, highlight.js@10.4.0
 

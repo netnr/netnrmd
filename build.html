@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <title>打包</title>
-    <script src="https://cdn.jsdelivr.net/npm/terser@5.3.8/dist/bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/terser@5.5.1/dist/bundle.min.js"></script>
 </head>
 <body>
     <script>
@@ -12,18 +12,22 @@
             bundle: [
                 {
                     src: "/src/netnrmd.js",
-                    comment: "netnrmd v2.5.0 | MIT | Minified by Terser",
+                    comment: "netnrmd @2.6.1 | MIT | Minified by Terser",
                     compression: true
                 },
                 {
-                    src: "https://cdn.jsdelivr.net/npm/marked@1.2.5/lib/marked.min.js"
+                    src: "https://cdn.jsdelivr.net/npm/marked@1.2.7/lib/marked.js",
+                    comment: "marked @version",
+                    compression: true
                 },
                 {
-                    src: "https://cdn.jsdelivr.net/npm/dompurify@2.2.2/dist/purify.min.js"
+                    src: "https://cdn.jsdelivr.net/npm/dompurify@2.2.6/dist/purify.js",
+                    comment: "DOMPurify @version",
+                    compression: true
                 },
                 {
-                    src: "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.4.0/build/highlight.js",
-                    comment: "Highlight.js 10.4.0 | BSD-3-Clause | Minified by Terser",
+                    src: "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.5.0/build/highlight.js",
+                    comment: "Highlight.js @version",
                     compression: true
                 }
             ],
@@ -58,7 +62,9 @@
                     var code = [];
                     bd.bundle.forEach(bi => {
                         if (bi.comment) {
-                            code.push("/*! " + bi.comment + " */");
+                            var version = bi.src.match(/@\d+.\d+.\d+/);
+                            version = version ? version[0] : "";
+                            code.push("/*! " + bi.comment.replace("@version", version) + " */");
                         }
                         code.push(bi.txt);
                         code.push("");

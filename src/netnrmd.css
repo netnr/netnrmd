@@ -71,7 +71,6 @@
     position: relative;
     border-right: 1px solid #ccc;
     box-sizing: border-box;
-    padding: 0 0 0 10px;
     float: left;
     width: 50%;
 }
@@ -103,10 +102,12 @@
     width: 100%;
     border-right: none;
 }
-/*隐藏编辑*/
+/*隐藏编辑（修复切换出现卡死的问题，原因未知）*/
 .netnrmd-write-hidden {
-    width: 100%;
-    display: none;
+    position: absolute;
+    opacity: 0;
+    top: 99999px;
+    left: 99999px;
     overflow: hidden;
 }
 /*隐藏视图*/

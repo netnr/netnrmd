@@ -21,12 +21,12 @@ jQuery + Monaco Editor 编辑器 + Marked 解析 + DOMPurify 清洗 + highlight 
 <link href="src/netnrmd.css" rel="stylesheet" />
 <script src="src/netnrmd.bundle.js"></script>
 <script src="src/netnrmd.extend.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.21.2/min/vs/loader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.21.3/min/vs/loader.js"></script>
 
 <script>
     require.config({
         paths: {
-            vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.21.2/min/vs'
+            vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.21.3/min/vs'
         },
         'vs/nls': { availableLanguages: { '*': 'zh-cn' } }
     });
