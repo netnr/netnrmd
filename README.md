@@ -3,7 +3,7 @@
 # NetnrMD Editor
 jQuery + Monaco Editor + Marked Parsing + DOMPurify Cleaning + highlight
 
-> <https://md.netnr.com>
+> <https://md.js.org>
 
 ### [CHANGELOG](changelog.md)
 

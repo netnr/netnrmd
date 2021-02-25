@@ -3,7 +3,7 @@
 # NetnrMD编辑器
 jQuery + Monaco Editor 编辑器 + Marked 解析 + DOMPurify 清洗 + highlight 代码高亮
 
-> <https://md.netnr.com>
+> <https://md.js.org>
 
 ### [变更日志](changelog_zh-CN.md)
 
