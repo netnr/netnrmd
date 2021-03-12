@@ -1,13 +1,9 @@
-﻿English | [简体中文](README_zh-CN.md)
-
-# NetnrMD Editor
-jQuery + Monaco Editor + Marked Parsing + DOMPurify Cleaning + highlight
+﻿# NetnrMD编辑器
+jQuery + Monaco Editor 编辑器 + Marked 解析 + DOMPurify 清洗 + highlight 代码高亮
 
 > <https://md.js.org>
 
-### [CHANGELOG](changelog.md)
-
-### Install
+### Install 安装
 
 <https://www.jsdelivr.com/package/npm/netnrmd>
 
@@ -18,15 +14,15 @@ jQuery + Monaco Editor + Marked Parsing + DOMPurify Cleaning + highlight
 
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.min.js"></script>
 
-<link href="src/netnrmd.css" rel="stylesheet" />
-<script src="src/netnrmd.bundle.js"></script>
-<script src="src/netnrmd.extend.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.21.3/min/vs/loader.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/netnrmd@2.6.1/src/netnrmd.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/netnrmd@2.6.1/src/netnrmd.bundle.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.23.0/min/vs/loader.js"></script>
 
 <script>
     require.config({
         paths: {
-            vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.21.3/min/vs'
+            vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.23.0/min/vs'
         },
         'vs/nls': { availableLanguages: { '*': 'zh-cn' } }
     });
@@ -39,93 +35,67 @@ jQuery + Monaco Editor + Marked Parsing + DOMPurify Cleaning + highlight
 </script>
 ```
 
-### Options
+### Options 选项
 
 ```js
-var nmd = new netnrmd('#editor', {
-	//View, 1 editor, 2 split screen, 3 preview, default 2
-	viewmodel: 2
+var nmd = new netnrmd('#editor', {	
+	viewmodel: 2,       //视图,1输入，2分屏，3预览，默认2
+    fontsize: 16,       //编辑器字体大小
+    height: 300,        //高度
+    defer: 500,         //延迟解析（毫秒）
+	storekey: "key",    //自动保存键，默认netnrmd_markdown，一个页面有多netnrmd编辑器时需要对应配置
+	autosave: true,     //默认有变化自动保存
+    prefixkey: 'Ctrl+', //按键支持
 
-    //Editor font size
-    fontsize: 16,
-
-    height: 300,
-	//Delay Parsing (ms)
-    defer: 300,
-
-    //Auto save key, default netnrmd_markdown, corresponding configuration is needed when there are multiple netnrmd editors on a page
-	storekey: "key",
-    //Changes are automatically saved by default
-	autosave: true,
-
-    prefixkey: 'Ctrl+',
-
-    //Before rendering the callback
+    //渲染前回调
     viewbefore: function () {
 		console.log(this);
     },
 
-    //Markdown editor changes when callback
+    //编辑器变动时回调
     input: function () {
         console.log(this);
     },
 
-    //Trigger command callback
+	//触发命令回调
     cmdcallback: function (cmd) {
         console.log(this);
     }
 });
 ```
 
-### Function
+### Function 方法
 
 ```js
 var nmd = new netnrmd('#editor');
 console.log(nmd);
 
-//Focus editor
-nmd.focus();
+nmd.setmd(md);          //set markdown 赋值
+nmd.getmd();            //get markdown 取值
+nmd.sethtml(html);      //set html 赋值
+nmd.gethtml();          //get html 取值
 
-//set height
-nmd.height(200);
+nmd.render();           //render 渲染
 
-//View switching, default 2, 1, 3 cycle
-nmd.toggleView();
-//View editor
-nmd.toggleView(1);
-//View editor and preview
-nmd.toggleView(2);
-//View preview
-nmd.toggleView(3);
+nmd.focus();            //focus 焦点选中
+nmd.height(200);        //set height 设置高度
 
-//set markdown
-nmd.setmd(md);
+nmd.toggleView();       //toggle View 视图切换，默认2、1、3循环
+nmd.toggleView(1);      //输入
+nmd.toggleView(2);      //分屏
+nmd.toggleView(3);      //预览
 
-//get markdown
-nmd.getmd();
+nmd.hide();             //hide 隐藏
+nmd.hide('toolbar');    //hide 工具条
+nmd.show();             //show 显示
+nmd.show('toolbar');    //show 工具条
 
-//set html
-nmd.sethtml(html);
+nmd.setstore();         //set store 写入本地保存
+nmd.getstore();         //get store 获取本地保存
 
-//get html
-nmd.gethtml();
 
-//render
-nmd.render();
-
-//hide
-nmd.hide();
-//hide toolbar
-nmd.hide('toolbar');
-
-//show
-nmd.show();
-//show toolbar
-nmd.show('toolbar');
-
-//set localStorage
-nmd.setstore();
-
-//get localStorage
-nmd.getstore();
+netnrmd.render(md)      // 解析 Markdown
+netnrmd.getSelectText(me)   //获取 Monaco Editor 选中文本，me => nmd.obj.me
+netnrmd.insertAfterText(me, text)   // 在光标后插入文本
+netnrmd.popup(title, content)   // 弹出层
 ```

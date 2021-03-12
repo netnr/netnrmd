@@ -4,7 +4,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 
@@ -12,7 +11,6 @@
 
     <meta name="keywords" content="netnr,NET牛人,markdown,NetnrMD,NetnrMD编辑器" />
     <meta name="description" content="NetnrMD编辑器（jQuery + Monaco Editor 编辑器 + Marked 解析 + DOMPurify 清洗 + highlight 代码高亮）" />
-
 </head>
 <body>
     <div>
@@ -22,14 +20,14 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.min.js"></script>
 
     <link href="src/netnrmd.css?20210121" rel="stylesheet" />
-    <script src="src/netnrmd.bundle.js?20210121"></script>
-    <script src="src/netnrmd.extend.js?20201010"></script>
-    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.21.3/min/vs/loader.js"></script>
+    <script src="src/netnrmd.bundle.js?202103"></script>
+    <script src="src/netnrmd.extend.js?202103"></script>
+    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.23.0/min/vs/loader.js"></script>
 
     <script>
         require.config({
             paths: {
-                vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.21.3/min/vs'
+                vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.23.0/min/vs'
             },
             'vs/nls': { availableLanguages: { '*': 'zh-cn' } }
         });
@@ -60,19 +58,19 @@
                 }
             });
 
-            //加载默认值
-            var lsmd = localStorage.getItem("netnrmd_markdown");
-            if (!(lsmd && lsmd.trim() != "")) {
-                $.get('README_zh-CN.md', null, function (res) {
-                    nmd.setmd(res);
-                })
-            }
-
             //高度沉底
             $(window).on('load resize', function () {
                 var vh = $(window).height() - nmd.obj.container.offset().top - 10;
                 nmd.height(Math.max(100, vh));
             })
+
+            //加载默认值
+            var lsmd = localStorage.getItem("netnrmd_markdown");
+            if (!(lsmd && lsmd.trim() != "")) {
+                $.get('README.md', null, function (res) {
+                    nmd.setmd(res);
+                })
+            }
 
             //拖拽
             $(document).on("dragleave dragenter dragover", function (e) {

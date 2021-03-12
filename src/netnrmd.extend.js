@@ -64,54 +64,44 @@ netnrmd.extend = {
 
                 //保存创建的上传弹出
                 that.uploadpopup = netnrmd.popup("上传", htm.join(''));
+                var ptitle = $(that.uploadpopup).find('.np-header').find('span');
 
                 //选择文件上传，该上传接口仅为演示使用，仅支持图片格式的附件
                 $(that.uploadpopup).find('input').change(function () {
                     var file = this.files[0];
                     if (file) {
-                        if (file.size > 1024 * 1024 * 10) {
-                            alert('文件过大')
-                            this.value = "";
-                            return;
-                        }
-                        if (file.type.indexOf('image') != 0) {
-                            alert('仅支持图片')
+                        if (file.size > 1024 * 1024 * 5) {
+                            alert('文件过大 （MAX 5 MB）')
                             this.value = "";
                             return;
                         }
 
                         var fd = new FormData();
                         fd.append('file', file);
-                        fd.append('title', "netnr-bed");
-                        fd.append('desc', "This picture is uploaded from netnr");
-                        fd.append('cat', "netnr-category");
-                        fd.append('group', "netnr-group");
 
                         //发起上传
                         var xhr = new XMLHttpRequest();
                         xhr.upload.onprogress = function (event) {
                             if (event.lengthComputable) {
                                 //上传百分比
-                                var per = (event.loaded / event.total) * 100;
-                                per = per.toFixed(2) + " %";
-                                console.log(per);
+                                var per = ((event.loaded / event.total) * 100).toFixed(2);
+                                if (per < 100) {
+                                    ptitle.html(netnrmd.extend.upload.button.title + " （" + per + "%）");
+                                } else {
+                                    ptitle.html(netnrmd.extend.upload.button.title);
+                                }
                             }
                         };
 
-                        xhr.open("post", "https://uploadbeta.com/api/pictures/upload/file/", true);
+                        xhr.open("POST", "https://www.netnr.eu.org/api/v1/Upload", true);
                         xhr.send(fd);
                         xhr.onreadystatechange = function () {
                             if (xhr.readyState == 4) {
                                 if (xhr.status == 200) {
                                     console.log(xhr.responseText)
-                                    var res = JSON.parse(xhr.responseText), url;
-                                    if (res.img) {
-                                        url = res.img
-                                    }
-                                    else if (res.error.length < 15 && res.error.indexOf('-') >= 0) {
-                                        url = "https://uploadbeta.com/share-image/" + res.error.split('-')[1];
-                                    }
-                                    if (url) {
+                                    var res = JSON.parse(xhr.responseText);
+                                    if (res.code == 200) {
+                                        let url = "https://www.netnr.eu.org" + res.data.path;
                                         //上传成功，插入链接
                                         netnrmd.insertAfterText(that.obj.me, '[' + file.name + '](' + url + ')');
                                         $(that.uploadpopup).hide()

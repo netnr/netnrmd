@@ -1,61 +1,65 @@
-﻿# Change log
+﻿# 变更日志
+
+### [v2.6.2] - 2021-03-13
+- 更新 组件依赖版本：marked@2.0.1、dompurify@2.2.7、highlight.js@10.6.0
+- 更新 工具条项支持设置样式 class
 
 ### [v2.6.1] - 2021-01-22
-- Update component dependent version： marked@1.2.7, dompurify@2.2.6, highlight.js@10.5.0
-- Fixed the issue of freezing in certain situations when only the view is displayed
+- 更新 组件依赖版本：marked@1.2.7、dompurify@2.2.6、highlight.js@10.5.0
+- 修复 仅显示视图时某些情况出现卡死的问题
 
 ### [v2.6.0] - 2020-11-25
-- Update component dependent version: marked@1.2.5, dompurify@2.2.2, highlight.js@10.4.0
+- 更新 组件依赖版本：marked@1.2.5、dompurify@2.2.2、highlight.js@10.4.0
 
 ### [v2.4.1] - 2020-07-18
-- Fix `Monaco Editor v0.20.0` adaptive size not responding (delay adaptive)
+- 修复 `Monaco Editor v0.20.0` 自适应大小无响应（延迟自适应）
 
 ### [v2.4.0] - 2020-07-17
-- Fixed `Monaco Editor v0.20.0` not adaptive size when switching views
-- Adjusted the font of the editor to `16px` by default
-- Update Component dependencies: marked v1.1.1, DOMPurify v2.0.12, highlight.js v9.18.1
+- 修复 `Monaco Editor v0.20.0` 切换视图未自适应大小
+- 调整 编辑器字体默认为 `16px`
+- 更新 组件依赖：marked v1.1.1、DOMPurify v2.0.12、highlight.js v9.18.1
 
 ### [v2.2.3] - 2019-11-20
-- Add Markdown content word wrap
+- 添加 Markdown内容自动换行
 
 ### [v2.2.2] - 2019-08-22
-- Add extended functions
-- Add method notes
-- Add `netnrmd.render` parsing method
+- 添加 扩展功能
+- 添加 方法注释
+- 添加 `netnrmd.render` 解析方法
 
 ### [v2.2.1] - 2019-08-17
-- Fix style adjustment
+- 修复 样式调整
 
 ### [v2.2.0] - 2019-08-17
-- Adjustment, reference integration, function expansion
+- 调整 引用集成、功能拓展
 
 ### [v2.1.1] - 2019-08-17
-- Sample code for adding upload button
+- 添加 上传按钮的示例代码
 
 ### [v2.1.0] - 2019-08-16
-- Add emoji package support, https://github.com/netnr/emoji
-- Adjusted to remove FontAwesome dependency, integrated SVG vector icon into JS package
-- Adjusted code coloring style to VS theme color
+- 添加 表情包支持，https://github.com/netnr/emoji
+- 调整 去除 FontAwesome 依赖，集成SVG矢量图标到JS包
+- 调整 代码着色样式改为 VS 主题色
 
 ### [v2.0.0] - 2019-08-15
-- Revision: Monaco Editor + Marked analysis + highlight code highlighting
+- 改版：Monaco Editor 编辑器 + Marked 解析 + highlight 代码高亮
 
 ### [v1.2.0] - 2019-07-25
-- Adjust toolbar style
-- Adjust view switching mode
-- Adjust the preview style, limit the maximum height of the picture, and better synchronized scrolling
-- Optimize automatic saving
-- Optimized the problem of inserting scroll bar jump
+- 调整工具栏样式
+- 调整视图切换模式
+- 调整预览样式，限定图片最大高度，更好的同步滚动
+- 优化自动保存
+- 优化插入滚动条跳动的问题
 
 ### [v1.1.0] - 2018-12-01
-- Height setting fix
-- Adjust rendering style, include `github.css` code highlight style by default
+- 高度设置修复
+- 调整渲染样式、默认包含 `github.css` 代码高亮样式
 
 ### [v1.0.1] - 2018-06-13
-- Improved scroll bar synchronization method
-- Adjust rendering style
-- Added local saving of changes
-- Height setting fix after hiding the toolbar
+- 滚动条同步方法改进
+- 调整渲染样式
+- 新增变化本地保存
+- 隐藏工具条后高度设置修复
 
 ### [v1.0.2] - 2018-07-06
-- The clear method additionally clears the local cache
+- clear方法追加清空本地缓存
