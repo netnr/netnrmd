@@ -21,7 +21,7 @@
 
     <link href="src/netnrmd.css?20210121" rel="stylesheet" />
     <script src="src/netnrmd.bundle.js?202103"></script>
-    <script src="src/netnrmd.extend.js?202103"></script>
+    <script src="src/netnrmd.extend.js?20210316"></script>
     <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.23.0/min/vs/loader.js"></script>
 
     <script>
@@ -36,6 +36,7 @@
 
             //初始化
             window.nmd = new netnrmd('#editor', {
+
                 //加载扩展功能（可选）
 
                 //渲染前回调
@@ -65,7 +66,7 @@
             })
 
             //加载默认值
-            var lsmd = localStorage.getItem("netnrmd_markdown");
+            var lsmd = localStorage.getItem(location.pathname + "_netnrmd_markdown");
             if (!(lsmd && lsmd.trim() != "")) {
                 $.get('README.md', null, function (res) {
                     nmd.setmd(res);

@@ -129,19 +129,19 @@
 
             //初始化响应配置
 
-            //全屏
+            //视图模式：1输入|2分屏|3预览
+            this.toggleView(obj.viewmodel = netnrmd.dv(obj.viewmodel, 2));
+            //高度
+            this.height(obj.height = netnrmd.dv(obj.height, 250));
+            //全屏：1
             this.toggleFullScreen(obj.fullscreen = netnrmd.dv(obj.fullscreen, false));
             $(window).resize(function () {
                 if (obj.fullscreen) {
-                    that.height($(window).height(), true);
+                    that.setHeight($(window).height());
                 }
             });
-            //视图模式：1输入|2分屏|3预览
-            obj.viewmodel = netnrmd.dv(obj.viewmodel, 2);
-            //高度
-            this.height(obj.height = netnrmd.dv(obj.height, 250));
             //本地保存键
-            obj.storekey = netnrmd.dv(obj.storekey, "netnrmd_markdown");
+            obj.storekey = netnrmd.dv(obj.storekey, location.pathname + "_netnrmd_markdown");
             //本地自动保存
             obj.autosave = netnrmd.dv(obj.autosave, true);
             //载入本地保存
@@ -156,15 +156,18 @@
             this.obj.me.focus();
             return this;
         },
-        //设置高度
-        height: function (height, force) {
+        setHeight: function (height) {
+            var weh = height - (this.obj.toolbar.is(':hidden') ? 0 : this.obj.toolbar.outerHeight());
+            this.obj.write.css('height', weh);
+            this.obj.mebox.css('height', weh);
+            this.obj.view.css('height', weh);
+        },
+        //设置高度（非全屏模式时）
+        height: function (height) {
             if (height != null) {
-                if (force || !this.obj.fullscreen) {
-                    !this.obj.fullscreen && (this.obj.height = height);
-                    var weh = height - (this.obj.toolbar.is(':hidden') ? 0 : this.obj.toolbar.outerHeight());
-                    this.obj.write.css('height', weh);
-                    this.obj.mebox.css('height', weh);
-                    this.obj.view.css('height', weh);
+                this.obj.height = height;
+                if (!this.obj.fullscreen) {
+                    this.setHeight(height)
                 }
                 return this;
             } else {
@@ -185,7 +188,7 @@
             } else {
                 obj.editor.addClass('netnrmd-fullscreen');
                 $(tit).addClass('active');
-                this.height($(window).height(), true);
+                this.setHeight($(window).height());
             }
         },
         //分屏切换

@@ -40,10 +40,11 @@ jQuery + Monaco Editor 编辑器 + Marked 解析 + DOMPurify 清洗 + highlight 
 ```js
 var nmd = new netnrmd('#editor', {	
 	viewmodel: 2,       //视图,1输入，2分屏，3预览，默认2
+    fullscreen: 1,      //全屏
     fontsize: 16,       //编辑器字体大小
     height: 300,        //高度
     defer: 500,         //延迟解析（毫秒）
-	storekey: "key",    //自动保存键，默认netnrmd_markdown，一个页面有多netnrmd编辑器时需要对应配置
+	storekey: "key",    //自动保存键，默认 {location.pathname}_netnrmd_markdown，一个页面有多netnrmd编辑器时需要对应配置
 	autosave: true,     //默认有变化自动保存
     prefixkey: 'Ctrl+', //按键支持
 

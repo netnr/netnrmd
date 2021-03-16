@@ -28,23 +28,27 @@ netnrmd.extend = {
         //动作
         action: function (that) {
             if (!that.emojipopup) {
-                //构建弹出内容
-                var htm = [], epath = "https://cdn.jsdelivr.net/npm/netnr-cdn@0.0.1/libs/emoji/wangwang/", emojis = ["微笑", "害羞", "吐舌头", "偷笑", "爱慕", "大笑", "跳舞", "飞吻", "安慰", "抱抱", "加油", "胜利", "强", "亲亲", "花痴", "露齿笑", "查找", "呼叫", "算账", "财迷", "好主意", "鬼脸", "天使", "再见", "流口水", "享受", "色情狂", "呆", "思考", "迷惑", "疑问", "没钱了", "无聊", "怀疑", "嘘", "小样", "摇头", "感冒", "尴尬", "傻笑", "不会吧", "无奈", "流汗", "凄凉", "困了", "晕", "忧伤", "委屈", "悲伤", "大哭", "痛哭", "I服了U", "对不起", "再见（舍不得）", "皱眉", "好累", "生病", "吐", "背", "惊讶", "惊愕", "闭嘴", "欠扁", "鄙视", "大怒", "生气", "财神", "学习雷锋", "恭喜发财", "小二", "老大", "邪恶", "单挑", "CS", "忍者", "炸弹", "惊声尖叫", "漂亮MM", "帅GG", "招财猫", "成绩", "鼓掌", "握手", "红唇", "玫瑰", "残花", "爱心", "心碎", "钱", "购物", "礼物", "收邮件", "电话", "举杯庆祝", "时钟", "等待", "很晚了（晚安）", "飞机（空运）", "支付宝"];
-                for (var i = 0; i < emojis.length; i++) {
-                    htm.push('<img class="netnrmd-emoji" title="' + emojis[i] + '" src="' + epath + i + '.gif" />');
-                }
-                //弹出
-                that.emojipopup = netnrmd.popup("表情", htm.join(''));
-                //选择表情
-                $(that.emojipopup).click(function (e) {
-                    e = e || window.event;
-                    var target = e.target || e.srcElement;
-                    if (target.nodeName == "IMG") {
-                        netnrmd.insertAfterText(that.obj.me, '![emoji](' + target.src + ' "' + target.title + '")\n');
-
-                        $(this).hide();
+                var epath = "https://cdn.jsdelivr.net/gh/netnr/cdn/libs/emoji/";
+                $.getJSON(epath + "api.json", null, function (ej) {
+                    //构建弹出内容
+                    var htm = [], emojis = ej.filter(x => x.type == "wangwang")[0];
+                    for (var i = 0; i < emojis.list.length; i++) {
+                        var eurl = epath + emojis.type + '/' + i + emojis.ext;
+                        htm.push('<img class="netnrmd-emoji" title="' + emojis.list[i] + '" src="' + eurl + '" />');
                     }
-                })
+                    //弹出
+                    that.emojipopup = netnrmd.popup("表情", htm.join(''));
+                    //选择表情
+                    $(that.emojipopup).click(function (e) {
+                        e = e || window.event;
+                        var target = e.target || e.srcElement;
+                        if (target.nodeName == "IMG") {
+                            netnrmd.insertAfterText(that.obj.me, '![emoji](' + target.src + ' "' + target.title + '")\n');
+
+                            $(this).hide();
+                        }
+                    })
+                });
             }
             $(that.emojipopup).show();
         }
@@ -142,15 +146,38 @@ netnrmd.extend = {
                         var bv = target.innerHTML.toLowerCase();
                         switch (bv) {
                             case "markdown":
-                                netnrmd.down(that.getmd(), 'NetnrMD.md')
+                                netnrmd.down(that.getmd(), 'nmd.md')
                                 break;
                             case "html":
                             case "word":
-                                $.get('https://www.netnr.com/template/htmltoword.html', null, function (res) {
-                                    var htm = res.replace("@netnrmd@", that.gethtml());
-                                    var ext = bv == "word" ? "doc" : bv;
-                                    netnrmd.down(htm, 'NetnrMD.' + ext);
-                                })
+                                {
+                                    var netnrmd_body = that.gethtml();
+                                    $.get("src/netnrmd.css", null, function (netnrmd_style) {
+                                        var html = `
+                                                <!DOCTYPE html>
+                                                <html>
+                                                    <head>
+                                                    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+                                                    <style type="text/css">
+                                                        ${netnrmd_style}
+                                                    </style>
+                                                    </head>
+                                                    <body>
+                                                    <div class="markdown-body">${netnrmd_body}</div>
+                                                    </body>
+                                                </html>
+                                            `;
+
+                                        if (bv == "html") {
+                                            netnrmd.down(html, 'nmd.html');
+                                        }
+                                        else if (bv == "word") {
+                                            require(['https://cdn.jsdelivr.net/npm/html-docx-js@0.3.1/dist/html-docx.min.js'], function (module) {
+                                                netnrmd.down(module.asBlob(html), "nmd.docx");
+                                            });
+                                        }
+                                    });
+                                }
                                 break;
                             case "pdf":
                                 require(['https://cdn.jsdelivr.net/gh/eKoopmans/html2pdf.js/dist/html2pdf.bundle.min.js'], function (module) {
@@ -160,7 +187,7 @@ netnrmd.extend = {
                                     that.toggleView(3);
                                     module(that.obj.view[0], {
                                         margin: 3,
-                                        filename: 'NetnrMD.pdf',
+                                        filename: 'nmd.pdf',
                                         html2canvas: { scale: 1.5 }
                                     }).then(function () {
                                         that.obj.view.height(ch);
@@ -169,17 +196,29 @@ netnrmd.extend = {
                                 })
                                 break;
                             case "png":
-                                require(['https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.7/dist/html2canvas.min.js'], function (module) {
-                                    var ch = that.obj.view.height();
-                                    that.obj.view.height('auto');
-                                    module(that.obj.view[0], {
-                                        scale: 1.5,
-                                        margin: 15
-                                    }).then(function (canvas) {
-                                        that.obj.view.height(ch);
-                                        netnrmd.down(canvas, "NetnrMD.png");
+                                {
+                                    var backvm = false;
+                                    if (that.obj.viewmodel == 1) {
+                                        that.toggleView(2);
+                                        backvm = true;
+                                    }
+
+                                    require(['https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.7/dist/html2canvas.min.js'], function (module) {
+                                        var ch = that.obj.view.height();
+                                        that.obj.view.height('auto');
+                                        module(that.obj.view[0], {
+                                            scale: 1.5,
+                                            margin: 15
+                                        }).then(function (canvas) {
+                                            that.obj.view.height(ch);
+                                            netnrmd.down(canvas, "nmd.png");
+
+                                            if (backvm) {
+                                                that.toggleView(1);
+                                            }
+                                        })
                                     })
-                                })
+                                }
                                 break;
                         }
 

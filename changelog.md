@@ -1,5 +1,11 @@
 ﻿# 变更日志
 
+### [v2.6.3] - 2021-03-16
+- 优化 高度设置非全屏时有效，退出全屏设置高度生效
+- 调整 storekey 参数默认值为 {location.pathname}_netnrmd_markdown
+- 修复 viewmodel 参数初始化不生效
+- 更新 扩展方法
+
 ### [v2.6.2] - 2021-03-13
 - 更新 组件依赖版本：marked@2.0.1、dompurify@2.2.7、highlight.js@10.6.0
 - 更新 工具条项支持设置样式 class
