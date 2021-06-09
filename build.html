@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <title>打包</title>
-    <script src="https://cdn.jsdelivr.net/npm/terser@5.6.0/dist/bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/terser@5.7.0/dist/bundle.min.js"></script>
 </head>
 <body>
     <script>
@@ -12,22 +12,27 @@
             bundle: [
                 {
                     src: "/src/netnrmd.js",
-                    comment: "netnrmd @2.6.3 | MIT | Minified by Terser",
+                    comment: "netnrmd @3.0.0 | MIT | Minified by Terser",
                     compression: true
                 },
                 {
-                    src: "https://cdn.jsdelivr.net/npm/marked@2.0.1/lib/marked.js",
+                    src: "https://cdn.jsdelivr.net/npm/marked@2.0.7/lib/marked.js",
                     comment: "marked @version",
                     compression: true
                 },
                 {
-                    src: "https://cdn.jsdelivr.net/npm/dompurify@2.2.7/dist/purify.js",
+                    src: "https://cdn.jsdelivr.net/npm/dompurify@2.2.9/dist/purify.js",
                     comment: "DOMPurify @version",
                     compression: true
                 },
                 {
-                    src: "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.6.0/build/highlight.js",
+                    src: "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.0.1/build/highlight.js",
                     comment: "Highlight.js @version",
+                    compression: true
+                },
+                {
+                    src: "https://cdn.jsdelivr.net/npm/pangu@4.0.7/dist/browser/pangu.js",
+                    comment: "pangu @version",
                     compression: true
                 }
             ],
@@ -37,10 +42,15 @@
                     fetch(bi.src).then(x => x.text()).then(res => {
                         if (bi.compression) {
                             bi.text = res;
-                            Terser.minify(res).then(result => {
+                            Terser.minify(res, {
+                                output: {
+                                    comments: false,
+                                }
+                            }).then(result => {
                                 bi.txt = result.code;
                                 resolve();
                             }).catch(e => {
+                                console.log(e);
                                 bi.txt = e + "";
                             })
                         } else {

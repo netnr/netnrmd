@@ -1,5 +1,5 @@
-﻿# NetnrMD编辑器
-jQuery + Monaco Editor 编辑器 + Marked 解析 + DOMPurify 清洗 + highlight 代码高亮
+﻿# NetnrMD 编辑器
+Monaco Editor 编辑器 + Marked 解析 + DOMPurify 清洗 + highlight 代码高亮 + pangu 间隙
 
 > <https://md.js.org>
 
@@ -11,8 +11,6 @@ jQuery + Monaco Editor 编辑器 + Marked 解析 + DOMPurify 清洗 + highlight 
 <div>
     <div id="editor">Loading ...</div>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.min.js"></script>
 
 <link href="https://cdn.jsdelivr.net/npm/netnrmd@2.6.1/src/netnrmd.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/netnrmd@2.6.1/src/netnrmd.bundle.min.js"></script>
@@ -29,7 +27,7 @@ jQuery + Monaco Editor 编辑器 + Marked 解析 + DOMPurify 清洗 + highlight 
 
     require(['vs/editor/editor.main'], function () {
 
-        //初始化
+        // 初始化
         window.nmd = new netnrmd('#editor');
     });
 </script>
@@ -39,26 +37,26 @@ jQuery + Monaco Editor 编辑器 + Marked 解析 + DOMPurify 清洗 + highlight 
 
 ```js
 var nmd = new netnrmd('#editor', {	
-	viewmodel: 2,       //视图,1输入，2分屏，3预览，默认2
-    fullscreen: 1,      //全屏
-    fontsize: 16,       //编辑器字体大小
-    height: 300,        //高度
-    defer: 500,         //延迟解析（毫秒）
-	storekey: "key",    //自动保存键，默认 {location.pathname}_netnrmd_markdown，一个页面有多netnrmd编辑器时需要对应配置
-	autosave: true,     //默认有变化自动保存
-    prefixkey: 'Ctrl+', //按键支持
+	viewmodel: 2,       // 视图：1 输入，2 分屏，3 预览，默认 2
+    fullscreen: 1,      // 全屏
+    fontsize: 16,       // 编辑器字体大小
+    height: 300,        // 高度
+    defer: 500,         // 延迟解析（毫秒）
+	storekey: "key",    // 自动保存键，默认 {location.pathname}_netnrmd_markdown，一个页面有多 netnrmd 编辑器时需要对应配置
+	autosave: true,     // 默认有变化自动保存
+    prefixkey: 'Ctrl+', // 按键支持
 
-    //渲染前回调
+    // 渲染前回调
     viewbefore: function () {
 		console.log(this);
     },
 
-    //编辑器变动时回调
+    // 编辑器变动时回调
     input: function () {
         console.log(this);
     },
 
-	//触发命令回调
+	// 触发命令回调
     cmdcallback: function (cmd) {
         console.log(this);
     }
@@ -81,7 +79,7 @@ nmd.render();           //render 渲染
 nmd.focus();            //focus 焦点选中
 nmd.height(200);        //set height 设置高度
 
-nmd.toggleView();       //toggle View 视图切换，默认2、1、3循环
+nmd.toggleView();       //toggle View 视图切换，默认 2、1、3 循环
 nmd.toggleView(1);      //输入
 nmd.toggleView(2);      //分屏
 nmd.toggleView(3);      //预览
@@ -96,7 +94,9 @@ nmd.getstore();         //get store 获取本地保存
 
 
 netnrmd.render(md)      // 解析 Markdown
-netnrmd.getSelectText(me)   //获取 Monaco Editor 选中文本，me => nmd.obj.me
+netnrmd.getSelectText(me)   // 获取 Monaco Editor 选中文本，me => nmd.obj.me
 netnrmd.insertAfterText(me, text)   // 在光标后插入文本
+netnrmd.keepSetValue(me, text)   // 保留赋值（可撤回）
+netnrmd.spacing(text)   // 文字、数字、符号、英文添加空格间隙
 netnrmd.popup(title, content)   // 弹出层
 ```

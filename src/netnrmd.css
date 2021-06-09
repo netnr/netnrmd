@@ -21,6 +21,10 @@
     background-color: #fff;
     border-color: transparent;
 }
+
+    .netnrmd-fullscreen .netnrmd-toolbar {
+        border-radius: 0;
+    }
 /*工具条容器*/
 .netnrmd-toolbar {
     width: 100%;
@@ -37,11 +41,11 @@
 
     .netnrmd-menu li {
         float: left;
-        opacity: .5;
-        height: 25px;
+        opacity: .6;
+        height: 28px;
+        padding: 3px;
         margin: 3px 4px;
         cursor: pointer;
-        padding: 3px;
         user-select: none;
         box-sizing: border-box;
         border: 1px solid transparent;
@@ -142,7 +146,7 @@
 
     .netnrmd-popup .np-card {
         width: 100%;
-        max-width: 700px;
+        max-width: 760px;
         margin: 10vh auto 0;
         border-radius: 6px;
         border: 1px solid #ddd;
@@ -180,7 +184,7 @@
     margin: 2px;
     padding: 3px;
     cursor: pointer;
-    max-height: 38px;
+    max-height: 36px;
     border-radius: 50%;
     box-sizing: border-box;
     border: 2px dashed transparent;

@@ -7,27 +7,26 @@
 
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 
-    <title>NetnrMD编辑器</title>
+    <title>NetnrMD 编辑器</title>
 
-    <meta name="keywords" content="netnr,NET牛人,markdown,NetnrMD,NetnrMD编辑器" />
-    <meta name="description" content="NetnrMD编辑器（jQuery + Monaco Editor 编辑器 + Marked 解析 + DOMPurify 清洗 + highlight 代码高亮）" />
+    <meta name="keywords" content="netnr,NET牛人,markdown,NetnrMD,NetnrMD 编辑器" />
+    <meta name="description" content="NetnrMD 编辑器（Monaco Editor 编辑器 + Marked 解析 + DOMPurify 清洗 + highlight 代码高亮 + pangu 间隙）" />
 </head>
 <body>
     <div>
         <div id="editor">Loading ...</div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.min.js"></script>
+    <link href="src/netnrmd.css?20210609" rel="stylesheet" />
+    <script src="src/netnrmd.bundle.js?20210609"></script>
+    <script src="src/netnrmd.extend.js?20210609"></script>
 
-    <link href="src/netnrmd.css?20210121" rel="stylesheet" />
-    <script src="src/netnrmd.bundle.js?202103"></script>
-    <script src="src/netnrmd.extend.js?20210316"></script>
-    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.23.0/min/vs/loader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.24.0/min/vs/loader.js"></script>
 
     <script>
         require.config({
             paths: {
-                vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.23.0/min/vs'
+                vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.24.0/min/vs'
             },
             'vs/nls': { availableLanguages: { '*': 'zh-cn' } }
         });
@@ -37,16 +36,17 @@
             //初始化
             window.nmd = new netnrmd('#editor', {
 
-                //加载扩展功能（可选）
+                // 加载扩展功能（可选）
 
-                //渲染前回调
+                // 渲染前回调
                 viewbefore: function () {
-                    this.items.splice(14, 0, netnrmd.extend.upload.button);
-                    this.items.splice(15, 0, netnrmd.extend.import.button);
+                    [].findIndex(x => x.class != null)
+                    this.items.splice(15, 0, netnrmd.extend.upload.button);
+                    this.items.splice(16, 0, netnrmd.extend.import.button);
                     this.items.splice(17, 0, netnrmd.extend.about.button);
                     this.items.splice(0, 0, netnrmd.extend.emoji.button);
                 },
-                //命令回调
+                // 命令回调
                 cmdcallback: function (cmd) {
                     switch (cmd) {
                         case "about":
@@ -59,37 +59,52 @@
                 }
             });
 
-            //高度沉底
-            $(window).on('load resize', function () {
-                var vh = $(window).height() - nmd.obj.container.offset().top - 10;
-                nmd.height(Math.max(100, vh));
-            })
+            var mdinit = {
+                init: function () {
+                    mdinit.autoSize();
+                    window.addEventListener('resize', function () {
+                        mdinit.autoSize();
+                    }, false);
 
-            //加载默认值
-            var lsmd = localStorage.getItem(location.pathname + "_netnrmd_markdown");
-            if (!(lsmd && lsmd.trim() != "")) {
-                $.get('README.md', null, function (res) {
-                    nmd.setmd(res);
-                })
+                    mdinit.loadValue();
+
+                    mdinit.dragOpen();
+                },
+                autoSize: function () {
+                    var vh = document.documentElement.clientHeight - nmd.obj.container.getBoundingClientRect().top - 10;
+                    nmd.height(Math.max(100, vh));
+                },
+                loadValue: function () {
+                    var lsmd = localStorage.getItem(location.pathname + "_netnrmd_markdown");
+                    if (!(lsmd && lsmd.trim() != "")) {
+                        fetch('README.md').then(x => x.text()).then(res => {
+                            nmd.setmd(res);
+                        })
+                    }
+                },
+                dragOpen: function () {
+                    "dragleave dragenter dragover drop".split(' ').forEach(en => {
+                        document.addEventListener(en, function (e) {
+                            e.stopPropagation();
+                            e.preventDefault();
+                        }, false)
+                    });
+                    document.addEventListener('drop', function (e) {
+                        var files = (e.dataTransfer || e.originalEvent.dataTransfer).files;
+                        if (files && files.length) {
+                            var file = files[0];
+                            var reader = new FileReader();
+                            reader.onload = function (e) {
+                                nmd.setmd(e.target.result);
+                            };
+                            reader.readAsText(file);
+                        }
+                    }, false)
+                }
             }
 
-            //拖拽
-            $(document).on("dragleave dragenter dragover", function (e) {
-                if (e && e.stopPropagation) { e.stopPropagation() } else { window.event.cancelBubble = true }
-                if (e && e.preventDefault) { e.preventDefault() } else { window.event.returnValue = false }
-            }).on("drop", function (e) {
-                if (e && e.preventDefault) { e.preventDefault() } else { window.event.returnValue = false }
-                e = e || window.event;
-                var files = (e.dataTransfer || e.originalEvent.dataTransfer).files;
-                if (files && files.length) {
-                    var file = files[0];
-                    var reader = new FileReader();
-                    reader.onload = function (e) {
-                        nmd.setmd(e.target.result);
-                    };
-                    reader.readAsText(file);
-                }
-            });
+            mdinit.init();
+
         });
     </script>
 </body>

@@ -4,34 +4,34 @@ netnrmd.extend = {
     //关于
     about: {
         //按钮
-        button: { title: '关于', cmd: 'about', svg: "M616.282 34.31c64.875 3.514 114.594 58.488 111.047 122.79-3.546 64.297-59.015 113.572-123.891 110.058-64.879-3.513-114.595-58.49-111.049-122.79 3.547-64.3 59.014-113.574 123.893-110.058zM324.15 534.663s227.937-165.53 302.517-133.257c74.577 32.276-26.261 236.325-33.615 266.515-7.352 30.193-54.62 261.307 100.842 133.255 0 0 77.73-51.013-33.615 66.626-111.345 117.639-252.097 155.117-268.902 66.63-12.67-66.708 53.888-308.64 67.224-399.769 4.356-29.76-33.612 0-33.612 0S315.7 610.713 290.536 567.98c-4.007-6.807 22.947-27.69 33.614-33.317z" },
+        button: { title: '关于', cmd: 'about', svg: '<path d="m10.277 5.433-4.031.505-.145.67.794.145c.516.123.619.309.505.824L6.101 13.68c-.34 1.578.186 2.32 1.423 2.32.959 0 2.072-.443 2.577-1.052l.155-.732c-.35.31-.866.434-1.206.434-.485 0-.66-.34-.536-.939l1.763-8.278zm.122-3.673a1.76 1.76 0 1 1-3.52 0 1.76 1.76 0 0 1 3.52 0z"/>' },
         //动作
         action: function (that) {
             if (!that.aboutpopup) {
                 //构建弹出内容
                 var htm = [];
-                htm.push("<h1><img src='/favicon.ico' style='height:40px;vertical-align:bottom' /> NetnrMD编辑器</h1>");
-                htm.push("<p>jQuery + Monaco Editor 编辑器 + Marked 解析 + DOMPurify 清洗 + highlight 代码高亮</p>");
+                htm.push("<h2>NetnrMD 编辑器</h2>");
+                htm.push("<p>Monaco Editor 编辑器 + Marked 解析 + DOMPurify 清洗 + highlight 代码高亮 + pangu 间隙</p>");
                 htm.push("<p><a href='https://github.com/netnr/netnrmd'>https://github.com/netnr/netnrmd</a></p>");
                 htm.push("<p><a href='https://gitee.com/netnr/netnrmd'>https://gitee.com/netnr/netnrmd</a></p>");
-                htm.push("<p>&copy; 2019 <a href='https://www.netnr.com' target='_blank'>Netnr</a>, The <a href='https://github.com/netnr/netnrmd/blob/master/LICENSE' target='_blank'>MIT</a> License</p>");
+                htm.push("<p>&copy; <a href='https://www.netnr.com' target='_blank'>Netnr</a>, The <a href='https://github.com/netnr/netnrmd/blob/master/LICENSE' target='_blank'>MIT</a> License</p>");
                 //弹出
                 that.aboutpopup = netnrmd.popup("关于", htm.join(''));
             }
-            $(that.aboutpopup).show();
+            that.aboutpopup.style.display = '';
         }
     },
     //表情
     emoji: {
         //按钮
-        button: { title: '表情', cmd: 'emoji', svg: "M512 1024A512 512 0 1 0 512 0a512 512 0 0 0 0 1024zM512 96a416 416 0 1 1 0 832 416 416 0 0 1 0-832zM256 320a64 64 0 1 1 128 0 64 64 0 0 1-128 0z m384 0a64 64 0 1 1 128 0 64 64 0 0 1-128 0z m64.128 307.264l82.304 49.408C730.496 769.728 628.544 832 512 832s-218.432-62.272-274.432-155.328l82.304-49.408C359.04 692.416 430.4 736 512 736s152.896-43.584 192.128-108.736z" },
+        button: { title: '表情', cmd: 'emoji', svg: '<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M4.285 9.567a.5.5 0 0 1 .683.183A3.498 3.498 0 0 0 8 11.5a3.498 3.498 0 0 0 3.032-1.75.5.5 0 1 1 .866.5A4.498 4.498 0 0 1 8 12.5a4.498 4.498 0 0 1-3.898-2.25.5.5 0 0 1 .183-.683zM7 6.5C7 7.328 6.552 8 6 8s-1-.672-1-1.5S5.448 5 6 5s1 .672 1 1.5zm4 0c0 .828-.448 1.5-1 1.5s-1-.672-1-1.5S9.448 5 10 5s1 .672 1 1.5z"/>' },
         //动作
         action: function (that) {
             if (!that.emojipopup) {
                 var epath = "https://cdn.jsdelivr.net/gh/netnr/cdn/libs/emoji/";
-                $.getJSON(epath + "api.json", null, function (ej) {
+                fetch(epath + 'api.json').then(x => x.json()).then(res => {
                     //构建弹出内容
-                    var htm = [], emojis = ej.filter(x => x.type == "wangwang")[0];
+                    var htm = [], emojis = res.filter(x => x.type == "wangwang")[0];
                     for (var i = 0; i < emojis.list.length; i++) {
                         var eurl = epath + emojis.type + '/' + i + emojis.ext;
                         htm.push('<img class="netnrmd-emoji" title="' + emojis.list[i] + '" src="' + eurl + '" />');
@@ -39,24 +39,24 @@ netnrmd.extend = {
                     //弹出
                     that.emojipopup = netnrmd.popup("表情", htm.join(''));
                     //选择表情
-                    $(that.emojipopup).click(function (e) {
-                        e = e || window.event;
-                        var target = e.target || e.srcElement;
+                    that.emojipopup.addEventListener('click', function (e) {
+                        var target = e.target;
                         if (target.nodeName == "IMG") {
                             netnrmd.insertAfterText(that.obj.me, '![emoji](' + target.src + ' "' + target.title + '")\n');
 
-                            $(this).hide();
+                            this.style.display = 'none';
                         }
-                    })
+                    }, false)
                 });
+            } else {
+                that.emojipopup.style.display = '';
             }
-            $(that.emojipopup).show();
         }
     },
     //上传
     upload: {
         //按钮
-        button: { title: '上传', cmd: 'upload', svg: "M1024 640.192C1024 782.912 919.872 896 787.648 896h-512C123.904 896 0 761.6 0 597.504 0 451.968 94.656 331.52 226.432 302.976 284.16 195.456 391.808 128 512 128c152.32 0 282.112 108.416 323.392 261.12C941.888 413.44 1024 519.04 1024 640.192z m-341.312-139.84L512 314.24 341.312 500.48h341.376z m-213.376 0v256h85.376v-256H469.312z" },
+        button: { title: '上传', cmd: 'upload', svg: '<path fill-rule="evenodd" d="M7.646 5.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 6.707V10.5a.5.5 0 0 1-1 0V6.707L6.354 7.854a.5.5 0 1 1-.708-.708l2-2z"/><path d="M4.406 3.342A5.53 5.53 0 0 1 8 2c2.69 0 4.923 2 5.166 4.579C14.758 6.804 16 8.137 16 9.773 16 11.569 14.502 13 12.687 13H3.781C1.708 13 0 11.366 0 9.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383zm.653.757c-.757.653-1.153 1.44-1.153 2.056v.448l-.445.049C2.064 6.805 1 7.952 1 9.318 1 10.785 2.23 12 3.781 12h8.906C13.98 12 15 10.988 15 9.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 4.825 10.328 3 8 3a4.53 4.53 0 0 0-2.941 1.1z"/>' },
         //动作
         action: function (that) {
             if (!that.uploadpopup) {
@@ -68,10 +68,10 @@ netnrmd.extend = {
 
                 //保存创建的上传弹出
                 that.uploadpopup = netnrmd.popup("上传", htm.join(''));
-                var ptitle = $(that.uploadpopup).find('.np-header').find('span');
+                var ptitle = that.uploadpopup.querySelector('.np-header').querySelector('span');
 
                 //选择文件上传，该上传接口仅为演示使用，仅支持图片格式的附件
-                $(that.uploadpopup).find('input').change(function () {
+                that.uploadpopup.querySelector('input').addEventListener('change', function () {
                     var file = this.files[0];
                     if (file) {
                         if (file.size > 1024 * 1024 * 5) {
@@ -90,9 +90,9 @@ netnrmd.extend = {
                                 //上传百分比
                                 var per = ((event.loaded / event.total) * 100).toFixed(2);
                                 if (per < 100) {
-                                    ptitle.html(netnrmd.extend.upload.button.title + " （" + per + "%）");
+                                    ptitle.innerHTML = netnrmd.extend.upload.button.title + " （" + per + "%）";
                                 } else {
-                                    ptitle.html(netnrmd.extend.upload.button.title);
+                                    ptitle.innerHTML = netnrmd.extend.upload.button.title;
                                 }
                             }
                         };
@@ -108,7 +108,7 @@ netnrmd.extend = {
                                         let url = "https://www.netnr.eu.org" + res.data.path;
                                         //上传成功，插入链接
                                         netnrmd.insertAfterText(that.obj.me, '[' + file.name + '](' + url + ')');
-                                        $(that.uploadpopup).hide()
+                                        that.uploadpopup.style.display = "none";
                                     } else {
                                         alert('上传失败');
                                     }
@@ -118,15 +118,16 @@ netnrmd.extend = {
                             }
                         }
                     }
-                })
+                }, false)
             }
-            $(that.uploadpopup).show().find('input').val('');
+            that.uploadpopup.style.display = "";
+            that.uploadpopup.querySelector('input').value = '';
         }
     },
     //导出
     import: {
         //按钮
-        button: { title: '导出', cmd: 'import', svg: "M877.49 381.468H668.638V68.191H355.36v313.277H146.51l365.489 365.49 365.49-365.49zM146.51 851.383v104.425h730.98V851.383H146.51z" },
+        button: { title: '导出', cmd: 'import', svg: '<path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>' },
         //动作
         action: function (that) {
             if (!that.importpopup) {
@@ -139,9 +140,8 @@ netnrmd.extend = {
                 htm.push("</div>");
                 //弹出
                 that.importpopup = netnrmd.popup("导出", htm.join(''));
-                $(that.importpopup).click(function (e) {
-                    e = e || window.event;
-                    var target = e.target || e.srcElement;
+                that.importpopup.addEventListener('click', function (e) {
+                    var target = e.target;
                     if (target.nodeName == "BUTTON") {
                         var bv = target.innerHTML.toLowerCase();
                         switch (bv) {
@@ -152,7 +152,7 @@ netnrmd.extend = {
                             case "word":
                                 {
                                     var netnrmd_body = that.gethtml();
-                                    $.get("src/netnrmd.css", null, function (netnrmd_style) {
+                                    fetch('src/netnrmd.css').then(x => x.text()).then(netnrmd_style => {
                                         var html = `
                                                 <!DOCTYPE html>
                                                 <html>
@@ -176,21 +176,21 @@ netnrmd.extend = {
                                                 netnrmd.down(module.asBlob(html), "nmd.docx");
                                             });
                                         }
-                                    });
+                                    })
                                 }
                                 break;
                             case "pdf":
                                 require(['https://cdn.jsdelivr.net/gh/eKoopmans/html2pdf.js/dist/html2pdf.bundle.min.js'], function (module) {
-                                    var ch = that.obj.view.height();
-                                    that.obj.view.height('auto');
+                                    var ch = that.obj.view.clientHeight;
+                                    that.obj.view.style.height = 'auto';
                                     var vm = that.obj.viewmodel;
                                     that.toggleView(3);
-                                    module(that.obj.view[0], {
+                                    module(that.obj.view, {
                                         margin: 3,
                                         filename: 'nmd.pdf',
                                         html2canvas: { scale: 1.5 }
                                     }).then(function () {
-                                        that.obj.view.height(ch);
+                                        that.obj.view.height = ch + 'px';
                                         that.toggleView(vm);
                                     })
                                 })
@@ -204,13 +204,13 @@ netnrmd.extend = {
                                     }
 
                                     require(['https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.7/dist/html2canvas.min.js'], function (module) {
-                                        var ch = that.obj.view.height();
-                                        that.obj.view.height('auto');
-                                        module(that.obj.view[0], {
+                                        var ch = that.obj.view.clientHeight;
+                                        that.obj.view.style.height = 'auto';
+                                        module(that.obj.view, {
                                             scale: 1.5,
                                             margin: 15
                                         }).then(function (canvas) {
-                                            that.obj.view.height(ch);
+                                            that.obj.view.height = ch + 'px';
                                             netnrmd.down(canvas, "nmd.png");
 
                                             if (backvm) {
@@ -222,11 +222,11 @@ netnrmd.extend = {
                                 break;
                         }
 
-                        $(this).hide();
+                        this.style.display = 'none';
                     }
-                })
+                }, false)
             }
-            $(that.importpopup).show();
+            that.importpopup.style.display = '';
         }
     }
 }

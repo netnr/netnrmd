@@ -1,5 +1,10 @@
 ﻿# 变更日志
 
+### [v3.0.0] - 2021-06-09
+- 去除 jQuery 依赖
+- 新增 pangu 间隙功能
+- 更新 组件依赖版本：marked@2.0.7、dompurify@2.2.9、highlight.js@11.0.1、pangu@4.0.7
+
 ### [v2.6.3] - 2021-03-16
 - 优化 高度设置非全屏时有效，退出全屏设置高度生效
 - 调整 storekey 参数默认值为 {location.pathname}_netnrmd_markdown
