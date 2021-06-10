@@ -12,15 +12,15 @@ Monaco Editor 编辑器 + Marked 解析 + DOMPurify 清洗 + highlight 代码高
     <div id="editor">Loading ...</div>
 </div>
 
-<link href="https://cdn.jsdelivr.net/npm/netnrmd@2.6.1/src/netnrmd.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/netnrmd@2.6.1/src/netnrmd.bundle.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/netnrmd@3.0.0/src/netnrmd.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/netnrmd@3.0.0/src/netnrmd.bundle.min.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.23.0/min/vs/loader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.24.0/min/vs/loader.js"></script>
 
 <script>
     require.config({
         paths: {
-            vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.23.0/min/vs'
+            vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.24.0/min/vs'
         },
         'vs/nls': { availableLanguages: { '*': 'zh-cn' } }
     });
