@@ -7,6 +7,7 @@
     var netnrmd = function (id, obj) { return new netnrmd.fn.init(id, obj) }
 
     netnrmd.fn = netnrmd.prototype = {
+
         init: function (id, obj) {
             var that = this;
             obj = obj || {};
@@ -143,8 +144,10 @@
 
             //视图模式：1输入|2分屏|3预览
             this.toggleView(obj.viewmodel = netnrmd.dv(obj.viewmodel, 2));
+
             //高度
             this.height(obj.height = netnrmd.dv(obj.height, 250));
+
             //全屏：1
             this.toggleFullScreen(obj.fullscreen = netnrmd.dv(obj.fullscreen, false));
             window.addEventListener('resize', function () {
@@ -152,28 +155,36 @@
                     that.setHeight(document.documentElement.clientHeight);
                 }
             }, false);
+
             //本地保存键
             obj.storekey = netnrmd.dv(obj.storekey, location.pathname + "_netnrmd_markdown");
+
             //本地自动保存
             obj.autosave = netnrmd.dv(obj.autosave, true);
+
             //载入本地保存
             if (obj.autosave > 0) {
                 this.getstore();
             }
+
             obj.mebox['netnrmd'] = this;
             return this;
         },
+
         //获取焦点
         focus: function () {
             this.obj.me.focus();
             return this;
         },
+
+        //设置高度
         setHeight: function (height) {
             var weh = (height - (this.obj.toolbar.style.display == "none" ? 0 : this.obj.toolbar.offsetHeight)) + "px";
             this.obj.write.style.height = weh;
             this.obj.mebox.style.height = weh;
             this.obj.view.style.height = weh;
         },
+
         //设置高度（非全屏模式时）
         height: function (height) {
             if (height != null) {
@@ -186,6 +197,7 @@
                 return this.obj.height;
             }
         },
+
         //全屏切换
         toggleFullScreen: function (fullscreen) {
             var obj = this.obj, tit = this.getToolItemTarget('fullscreen');
@@ -203,6 +215,7 @@
                 this.setHeight(document.documentElement.clientHeight);
             }
         },
+
         //分屏切换
         toggleSplitScreen: function (splitscreen) {
             var obj = this.obj;
@@ -223,6 +236,7 @@
                 obj.me.layout()
             }, 1)
         },
+
         //预览切换
         togglePreview: function (preview) {
             var obj = this.obj;
@@ -242,6 +256,7 @@
                 obj.me.layout()
             }, 1)
         },
+
         //视图切换
         toggleView: function (n) {
             if (n == null) {
@@ -266,11 +281,13 @@
                     break;
             }
         },
+
         //添加间隙
         spacing: function () {
             netnrmd.keepSetValue(this.obj.me, netnrmd.spacing(this.obj.me.getValue()));
             return this;
         },
+
         //根据命令获取工具条的对象
         getToolItemTarget: function (cmd) {
             var target;
@@ -281,25 +298,36 @@
             })
             return target;
         },
+
+        //获取光标行前面的内容
+        getLineContentPosPrev: function () {
+            var ms = this.obj.me.getSelection();
+            var lcpp = this.obj.me.getModel().getLineContent(ms.startLineNumber).substring(0, ms.startColumn - 1).trim();
+            return lcpp;
+        },
+
         //赋值md
         setmd: function (md) {
             netnrmd.keepSetValue(this.obj.me, md);
-            //this.obj.me.setValue(md);
             return this;
         },
+
         //获取md
         getmd: function () {
             return this.obj.me.getValue();
         },
+
         //呈现html
         sethtml: function (html) {
             this.obj.view.innerHTML = html;
             return this;
         },
+
         //获取html
         gethtml: function () {
             return this.obj.view.innerHTML;
         },
+
         //渲染
         render: function () {
             var that = this;
@@ -315,6 +343,7 @@
                 }
             }, that.obj.defer);
         },
+
         //隐藏
         hide: function (area) {
             switch (area) {
@@ -325,6 +354,7 @@
                     this.obj.editor.style.display = "none";
             }
         },
+
         //显示
         show: function (area) {
             switch (area) {
@@ -335,10 +365,12 @@
                     this.obj.editor.style.display = "";
             }
         },
+
         //写入本地保存
         setstore: function () {
             localStorage[this.obj.storekey] = this.getmd();
         },
+
         //获取本地保存
         getstore: function () {
             var md = localStorage[this.obj.storekey]
@@ -416,27 +448,62 @@
                 ops.after = '~~';
                 break;
             case "header":
-                ops.dv = '标题';
-                ops.before = '### ';
+                {
+                    ops.dv = '标题';
+                    ops.before = '### ';
+
+                    var lcpp = that.getLineContentPosPrev();
+                    if (lcpp != "" && ["-", "+", "*"].indexOf(lcpp) == -1 && !/^\d+.$/.test(lcpp)) {
+                        ops.before = "\n" + ops.before;
+                    }
+                }
                 break;
             case "quote":
                 ops.before = '> ';
                 break;
             case "list-ol":
-                ops.before = '1. ';
-                ops.dv = '列表文本';
+                {
+                    ops.before = '1. ';
+                    ops.dv = '列表文本';
+
+                    var lcpp = that.getLineContentPosPrev();
+                    if (lcpp != "") {
+                        ops.before = "\n" + ops.before;
+                    }
+                }
                 break;
             case "list-ul":
-                ops.before = '- ';
-                ops.dv = '列表文本';
+                {
+                    ops.before = '- ';
+                    ops.dv = '列表文本';
+
+                    var lcpp = that.getLineContentPosPrev();
+                    if (lcpp != "") {
+                        ops.before = "\n" + ops.before;
+                    }
+                }
                 break;
             case "checked":
-                ops.before = '- [x] ';
-                ops.dv = '列表文本';
+                {
+                    ops.before = '- [x] ';
+                    ops.dv = '列表文本';
+
+                    var lcpp = that.getLineContentPosPrev();
+                    if (lcpp != "") {
+                        ops.before = "\n" + ops.before;
+                    }
+                }
                 break;
             case "unchecked":
-                ops.before = '- [ ] ';
-                ops.dv = '列表文本';
+                {
+                    ops.before = '- [ ] ';
+                    ops.dv = '列表文本';
+
+                    var lcpp = that.getLineContentPosPrev();
+                    if (lcpp != "") {
+                        ops.before = "\n" + ops.before;
+                    }
+                }
                 break;
             case "link":
                 ops.before = '[链接说明](';
@@ -449,8 +516,15 @@
                 ops.after = ')';
                 break;
             case "table":
-                var cols = ' col 1 | col 2 | col 3 ', hd = ' ---- | ---- | ---- ', nl = '\r\n';
-                ops.before = cols + nl + hd + nl + cols + nl + cols + nl + nl;
+                {
+                    var cols = ' col 1 | col 2 | col 3 ', hd = ' ---- | ---- | ---- ', nl = '\r\n';
+                    ops.before = cols + nl + hd + nl + cols + nl + cols + nl + nl;
+
+                    var lcpp = that.getLineContentPosPrev();
+                    if (lcpp != "") {
+                        ops.before = "\n\n" + ops.before;
+                    }
+                }
                 break;
             case "code":
                 {

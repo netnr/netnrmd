@@ -1,7 +1,7 @@
 {
   "name": "netnrmd",
-  "version": "2.6.3",
-  "description": "Markdown Combinatorial editor | 组合编辑器，Monaco Editor 编辑器 + Marked 解析 + DOMPurify 清洗 + highlight 代码高亮",
+  "version": "3.0.0",
+  "description": "Markdown Combinatorial editor | 组合编辑器，Monaco Editor 编辑器 + Marked 解析 + DOMPurify 清洗 + highlight 代码高亮 + pangu 间隙",
   "main": "src/netnrmd.bundle.js",
   "repository": {
     "type": "git",
