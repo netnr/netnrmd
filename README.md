@@ -36,19 +36,19 @@ Monaco Editor 编辑器 + Marked 解析 + DOMPurify 清洗 + highlight 代码高
 ### Options 选项
 
 ```js
-var nmd = new netnrmd('#editor', {	
-	viewmodel: 2,       // 视图：1 输入，2 分屏，3 预览，默认 2
+var nmd = new netnrmd('#editor', {
+    viewmodel: 2,       // 视图：1 输入，2 分屏，3 预览，默认 2
     fullscreen: 1,      // 全屏
     fontsize: 16,       // 编辑器字体大小
     height: 300,        // 高度
     defer: 500,         // 延迟解析（毫秒）
-	storekey: "key",    // 自动保存键，默认 {location.pathname}_netnrmd_markdown，一个页面有多 netnrmd 编辑器时需要对应配置
-	autosave: true,     // 默认有变化自动保存
+    storekey: "key",    // 自动保存键，默认 {location.pathname}_netnrmd_markdown，一个页面有多 netnrmd 编辑器时需要对应配置
+    autosave: true,     // 默认有变化自动保存
     prefixkey: 'Ctrl+', // 按键支持
 
     // 渲染前回调
     viewbefore: function () {
-		console.log(this);
+        console.log(this);
     },
 
     // 编辑器变动时回调
@@ -91,7 +91,6 @@ nmd.show('toolbar');    //show 工具条
 
 nmd.setstore();         //set store 写入本地保存
 nmd.getstore();         //get store 获取本地保存
-
 
 netnrmd.render(md)      // 解析 Markdown
 netnrmd.getSelectText(me)   // 获取 Monaco Editor 选中文本，me => nmd.obj.me
